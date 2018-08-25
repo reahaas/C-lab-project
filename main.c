@@ -30,9 +30,6 @@ void print_all_arg(int argc, char * argv[] )
  */
 int print_all_args( int argc, char * argv[] )
 {
-    char sorted_string [MAX_LINE_SIZE];
-    int string_length;
-
     print_all_arg( argc , argv );
     if(argc == 1)
         fprintf( stderr , "%s\n" , ERROR_NO_ARGUMENTS );
