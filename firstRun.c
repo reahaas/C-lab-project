@@ -12,6 +12,11 @@
 
 static bool handleLine(input_line*);
 
+/**
+ * the first run build the smbol table, and count the ic, dc.
+ * @param src the file to run on.
+ * @return flag as according to if error found in the file or not (true/false).
+ */
 FLAG firstRun(FILE *src) {
 	input_line *line;
 	int lineIndex;
