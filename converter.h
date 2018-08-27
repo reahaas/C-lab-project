@@ -9,8 +9,8 @@
 #define base32(a) (a) < 10 ? (a) + '0' : (a - 10) + 'A'
 #define OUTPUT_BASE 32
 #define WORD_SIZE_IN_BASE (int) ((WORD_SIZE + (int) log2(OUTPUT_BASE) - 1) / (int) log2(OUTPUT_BASE))
-char* base10to32enc(long unsigned int value); /* fixme can erase*/
+/*char* base10to32enc(long unsigned int value); */ /* fixme can erase*/
 char * base10to2Wierd(long unsigned int value);
-char *base10Decimal(long unsigned int value);
+char *valueToBase10DecimalString(long unsigned int value);
 
 #endif

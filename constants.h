@@ -7,8 +7,6 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-//add a b c d
-
 /* Size constants */
 #define MAX_MEMORY_SIZE 1000
 #define MAX_FILE_ZISE 1000
@@ -23,8 +21,8 @@
 #define RND_SIZE 2
 #define UNUSED_SIZE 1
 #define VALUE_SIZE 13
-#define OPCODES_AMOUNT 16  /* fixme can erase */
-#define WORD_SIZE 15
+#define OPCODES_AMOUNT 16  /* FIXME can erase */
+#define WORD_SIZE 15  /* TODO move: 15->14 */
 #define REG_AMOUNT 8
 #define EXT_LEN 4 /* Length of the extension file name. */
 #define INPUT_EXT ".as"

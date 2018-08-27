@@ -16,15 +16,18 @@ int strIndex = 0; /* Index for next read in the current line */
 /* Prototypes */
 static bool getNextArg(char *src, char *dest);
 static int getOp(const char **ops, const char *str, int opsAmount);
+static int getOpForValidLabel(const char **ops, const char *str, const int opsAmount);
 void trimmer(char * cmdStr, input_line * line);
 bool RecogniseLabelSection(char  * tmpStr, input_line * line);
 /* End prototypes */
 
+const char *ops[] = { "mov", "cmp", "add", "sub", "not", "clr", "lea",
+                      "inc", "dec", "jmp", "bne", "red", "prn", "jsr", "rts", "stop", /* Ops until here */
+                      ".data", ".string", ".entry", ".extern" }; /* Instructions *//* The order of these command stay identical to the order of the enum constants in constants.h so the index will match the enum value */
+
 /* Gets a line of code */
 input_line * getLine(FILE *input) {
-	const char *ops[] = { "mov", "cmp", "add", "sub", "not", "clr", "lea",
-			"inc", "dec", "jmp", "bne", "red", "prn", "jsr", "rts", "stop", /* Ops until here */
-			".data", ".string", ".entry", ".extern" }; /* Instructions *//* The order of these command stay identical to the order of the enum constants in constants.h so the index will match the enum value */
+
 	char cmdStr[LINE_MAX_LEN];
 	char tmpStr[LINE_MAX_LEN];
 	/* TODO : is needed???:  "char *p1, *p2;" */
@@ -78,12 +81,6 @@ input_line * getLine(FILE *input) {
 		return NULL;
 	}
 
-	/**
-	 * LABEL: i->mov r1 r2
-	 * cmdStr[strIndex] == cmdStr + strIndex
-	 * add r1 r2 r3
-	 * stop I->aasbh
-	 */
 
 	/* Recognises the operator */
 	if ((line->cmd = getOp(ops, tmpStr, sizeof(ops) / sizeof(ops[0]))) == -1) {
@@ -170,7 +167,7 @@ void trimmer(char * cmdStr, input_line * line){
  * @return true while label is valid or it's not a label, otherwise false
  */
 bool RecogniseLabelSection(char  * tmpStr, input_line *line) {
-    size_t length = (strlen(tmpStr)) - 1;
+    int length = (int)(strlen(tmpStr)) - 1;
 	if (tmpStr[(length)] == LABEL_DELIM){ // if in last place there is ':'
 		tmpStr[length] = '\0';
 		if (validLabel(tmpStr)){
@@ -178,12 +175,12 @@ bool RecogniseLabelSection(char  * tmpStr, input_line *line) {
                 strIndex += strlen(line->label) + 2;
 
 			else {
-				freeLine(line); // doing free here don't need in label aswell
+				freeLine(line); /*doing free here don't need in label aswell*/
 				return false; /* Error msg is placed in copyStr */
 			}
 		} else {
 			error(sprintf(errMsg, ILLEGAL_LABEL, tmpStr));
-			freeLine(line); // doing free here don't need in label aswell
+			freeLine(line); /*doing free here don't need in label aswell*/
 			return false;
 		}
 	} else {
@@ -209,6 +206,10 @@ void freeLine(input_line *line) {
 bool validLabel(const char *labelStr) {
 	int i;
 
+	if (getOpForValidLabel(ops,labelStr,(sizeof(ops) / sizeof(ops[0]))) != -1){
+		error(sprintf(errMsg, ILLEGAL_LABEL, labelStr));
+		return false;
+	}
 
 	if (validReg(labelStr)) {/* Error. a label cannot be a register name */
 		error(sprintf(errMsg, ILLEGAL_LABEL, labelStr));
@@ -307,3 +308,12 @@ static int getOp(const char **ops, const char *str, const int opsAmount) {
 	error(sprintf(errMsg, SYNTAX_ERROR UNKNOWN_OP));
 	return -1;
 }/* End getOp */
+
+
+static int getOpForValidLabel(const char **ops, const char *str, const int opsAmount){
+	int i;
+	for (i = 0; i < opsAmount; i++)
+		if (strcmp(str, ops[i]) == 0) /* Found the op */
+			return i;
+	return -1;
+}/* End getOpForValidLabel */
