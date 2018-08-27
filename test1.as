@@ -1,12 +1,10 @@
-.entry LOOP
-	MAIN:   inc K
-	mov *,W
- .extern    W
-	add r2, STR
-LOOP: jmp W
-	prn #-5
-STR: .string "ab"
-	sub r1,r4
-	stop
-.entry STR
-K: .data 2 , 7
+MAIN: mov ***, LENGTH
+add r2,STR
+LOOP: jmp END
+prn #-5
+sub r1, r4
+mov **,r3
+bne LOOP
+END: stop
+STR: .string "abcdef"
+LENGTH: .data 6,-9,15

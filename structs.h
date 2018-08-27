@@ -15,15 +15,15 @@ typedef struct {
 	unsigned int destOperand: OPERAND_SIZE;
 	unsigned int srcOperand : OPERAND_SIZE;
 	unsigned int opcode 	: OPCODE_SIZE;
-	unsigned int group 		: GROUP_SIZE;
-	unsigned int rnd 		: RND_SIZE;
-	unsigned int zeroBit	: UNUSED_SIZE;
+	unsigned int group 		: GROUP_SIZE; /* FIXME in our project its param-1 */
+	unsigned int rnd 		: RND_SIZE;   /* FIXME in our project its param-2 */
+	unsigned int zeroBit	: UNUSED_SIZE;  /* FIXME in our project its not exists */
 } cmd_word;
 
 /* Structure of an argument word */
 typedef struct {
 	unsigned int decode: DECODE_SIZE;
-	unsigned int value : VALUE_SIZE;
+	unsigned int value : VALUE_SIZE;  /* FIXME in our project its need to be less bits 13->12 */
 } arg_word;
 
 
