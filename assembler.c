@@ -67,7 +67,7 @@ input_line * getLine(FILE *input) {
 	if (line->isEffectless) /* FIXME is needed ??? */
 		return line;
 
-	sscanf(cmdStr, "%s", tmpStr);  /* copy the first string, which can be label, or command */
+	sscanf(cmdStr, "%s", tmpStr);  /* copy the first string, which can be label, or command, tmpStr will be comment or label */
 
 	if (!RecogniseLabelSection(tmpStr, line))   /* Recognise label section */
 		return NULL; /* error handle is in the function */
@@ -142,7 +142,7 @@ input_line * getLine(FILE *input) {
  * @param line the input line object that builded for this line.
  */
 void trimmer(char * cmdStr, input_line * line){
-	char * p1, p2;
+	char *p1, *p2;
 
 	p1 = p2 = cmdStr;
 	while (isspace(*p2))
@@ -154,7 +154,7 @@ void trimmer(char * cmdStr, input_line * line){
 		return;
 	}
 
-	for (; p2 - cmdStr < length - 1; p2++) {
+	for (; p2 - cmdStr < (strlen(cmdStr) -1 ); p2++) { // length is not global !
 		if (isspace(*p2) && isspace(*(p2 + 1)))
 			continue;
 		*p1++ = isspace(*p2) ? SPACE : *p2;
@@ -169,19 +169,21 @@ void trimmer(char * cmdStr, input_line * line){
  * @param line
  * @return true while label is valid or it's not a label, otherwise false
  */
-bool RecogniseLabelSection(char  * tmpStr, input_line * line) {
-	if (tmpStr[(length = strlen(tmpStr)) - 1] == LABEL_DELIM) {
-		tmpStr[length - 1] = '\0';
-		if (validLabel(tmpStr, line)) {
+bool RecogniseLabelSection(char  * tmpStr, input_line *line) {
+    size_t length = (strlen(tmpStr)) - 1;
+	if (tmpStr[(length)] == LABEL_DELIM){ // if in last place there is ':'
+		tmpStr[length] = '\0';
+		if (validLabel(tmpStr)){
 			if (copyStr(&(line->label), tmpStr))
-				strIndex += strlen(line->label) + 2;
+                strIndex += strlen(line->label) + 2;
+
 			else {
-				freeLine(line);
+				freeLine(line); // doing free here don't need in label aswell
 				return false; /* Error msg is placed in copyStr */
 			}
 		} else {
 			error(sprintf(errMsg, ILLEGAL_LABEL, tmpStr));
-			freeLine(line);
+			freeLine(line); // doing free here don't need in label aswell
 			return false;
 		}
 	} else {
@@ -204,13 +206,12 @@ void freeLine(input_line *line) {
 
 /* TODO add validCommand(tmpStr) {if(getOps())!= -1 : return false? return true;} to check if the label is a reserve word or not  */
 /* Validate whether the given str of a label is valid*/
-bool validLabel(const char *labelStr, input_line * line) {
+bool validLabel(const char *labelStr) {
 	int i;
 
 
-	if (validReg(tmpStr,line)) {/* Error. a label cannot be a register name */
-		error(sprintf(errMsg, ILLEGAL_LABEL, tmpStr));
-		freeLine(line);
+	if (validReg(labelStr)) {/* Error. a label cannot be a register name */
+		error(sprintf(errMsg, ILLEGAL_LABEL, labelStr));
 		return false;
 	}
 

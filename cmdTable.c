@@ -101,8 +101,8 @@ void printCmdTable(void) {
 	cmdNode* curr = NULL;
 	printf("#\tValue\n");
 	for (curr = cmd_list.head; curr != NULL; curr = curr->next, lineNumber++) {
-		printf("%s\t%s\n", base10to32enc(lineNumber),
-				base10to32enc(curr->value.print));
+		printf("%s\t%s\n", base10to2Wierd(lineNumber),
+			   base10to2Wierd(curr->value.print));
 	}
 	printDataTable(cmd_list.length);
 }

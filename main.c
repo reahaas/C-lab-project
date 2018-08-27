@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
 FLAG assembler(FILE *src) {
 	flag = ASM_SUCCESS;
 
-	firstRun(src); /* if an error occur during the first run, flag turn to ASM_FAILURE */
+	firstRun(src); /* if an error occurs during the first run, flag turn to ASM_FAILURE */
 	if (flag == ASM_SUCCESS)
 		secondRun(src); /* if an error occur during the second run, flag turn to ASM_FAILURE */
 	if (flag == ASM_SUCCESS)
