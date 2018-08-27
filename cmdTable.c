@@ -66,9 +66,8 @@ int addCmd(unsigned int decode, unsigned int destOperand,
 	newWord.cmd.destOperand = destOperand;
 	newWord.cmd.srcOperand = srcOperand;
 	newWord.cmd.opcode = opcode;
-	newWord.cmd.group = group;
-	newWord.cmd.rnd = rnd;
-	newWord.cmd.zeroBit = 0;
+	newWord.cmd.paramOne = group;
+	newWord.cmd.paramTwo = rnd;
 	if ((newNode = createCmdNode(newWord))
 			&& cmd_list.length + data_list.length < MAX_MEMORY_SIZE) {
 

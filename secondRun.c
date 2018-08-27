@@ -105,11 +105,8 @@ static bool handleLine2(input_line* line) {
 				multiReg.reg.destOperand = destArg.reg.destOperand;
 				multiReg.reg.srcOperand = srcArg.reg.srcOperand;
 				multiReg.reg.decode = ABS;
-				multiReg.reg.zeroBit = 0;
 				addArg(multiReg);
 			} else {
-				destArg.reg.zeroBit = 0;
-				srcArg.reg.zeroBit = 0;
 				if (srcAdders == DIR && srcArg.num.value == 0) {/* If the arg is external */
 					if (!addExt(line->args[0], getCmdLength() + 1)) {
 						return false;
@@ -225,7 +222,6 @@ static addressing getArgWord(const char *str, word *wrd) {
 		};
 		switch (i) {
 		case 1:/* Random register */
-			wrd->reg.zeroBit = 0;
 			wrd->reg.decode = ABS;
 			wrd->reg.srcOperand = rand() % REG_AMOUNT;
 			wrd->reg.destOperand = 0;
@@ -258,7 +254,6 @@ static addressing getArgWord(const char *str, word *wrd) {
 		wrd->num.value = num % (int) pow(2, VALUE_SIZE);
 		return IMD;
 	} else if (validReg(str)) {/* Is register name */
-		wrd->reg.zeroBit = 0;
 		wrd->reg.decode = ABS;
 		wrd->reg.destOperand = str[1] - '0';
 		wrd->reg.srcOperand = 0;
