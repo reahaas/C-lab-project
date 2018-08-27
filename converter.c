@@ -8,6 +8,7 @@
 #include <math.h>
 // double log2(double);/* Throws an error without it for some reason */
 
+/* TODO this function is from the previos project, need to delete */
 /*char* base10to32enc(long unsigned int value) {
 	char buffer[WORD_SIZE + 2];
 	char *tmp;
