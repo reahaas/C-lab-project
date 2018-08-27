@@ -77,7 +77,7 @@ typedef enum {
 	STOP
 } OPCODE; /* !Retain the current order! see info in inst_type */
 
-typedef enum { /*fixme may be can erase.
+typedef enum { /*fixme may be can erase*/
 	EMPTY, COMMENT, INSTUCTION, ACTION
 } sentence_type;
 typedef enum {
