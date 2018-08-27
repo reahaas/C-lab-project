@@ -48,7 +48,7 @@ input_line * getLine(FILE *input) {
 
 	if (!fgets(cmdStr, LINE_MAX_LEN, input)) { /* EOF encountered */
 		line->isEOF = true;
-		/* free(line->args) */  /* FIXME is this line is needed ???? */
+		/* free(line->args) */  /* FIXME is this line is needed ???? rea add */
 		return line;
 	}
 /* FIXME check the COMMENT_SIGN, is it the same as in our project?*/
@@ -64,8 +64,8 @@ input_line * getLine(FILE *input) {
 	}
 
 	trimmer(cmdStr, line); /* put in cmdStr the canonical form of itself */
-	if (line->isEffectless)
-		return line
+	if (line->isEffectless) /* FIXME is needed ??? */
+		return line;
 
 	sscanf(cmdStr, "%s", tmpStr);  /* copy the first string, which can be label, or command */
 
@@ -79,9 +79,10 @@ input_line * getLine(FILE *input) {
 	}
 
 	/**
+	 * LABEL: i->mov r1 r2
 	 * cmdStr[strIndex] == cmdStr + strIndex
-	 * I->add r1 r2 r3
-	 *
+	 * add r1 r2 r3
+	 * stop I->aasbh
 	 */
 
 	/* Recognises the operator */
@@ -126,7 +127,7 @@ input_line * getLine(FILE *input) {
 	} /* End of get all the other arguments */
 
 	if ((length = i) > 0)
-		line->args = realloc(line->args, sizeof(char *) * length + 1); /* Can't fail because it's shrinking */
+		line->args = realloc(line->args, sizeof(char *) * length + 1); /* Can't fail because it's shrinking, the initial size of args is bigger or equal to the actual size of args */
 
 	/* End arguments section */
 	strIndex = 0;
