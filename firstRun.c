@@ -110,6 +110,12 @@ static bool handleLine(input_line* line) {
             return false;
             /*Expected 2 args error */
         }
+        /* Count lines */
+        if (hasLabel) {
+            if (!(addLabel(line->label, cmd_list.length, isExt, isOp))) {
+                return false;
+            }
+        }
         increaseCmdLength(++wordCounter); /* Count number of rows in cmd table*/
         break;
 
