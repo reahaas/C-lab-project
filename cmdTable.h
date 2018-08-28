@@ -3,16 +3,6 @@
 
 #include "assembler.h"
 
-/* Sizes Constants */ /* TODO bit understand: 15 in chai project, 14 in our . need changes */
-#define CMD_STACK_MAX_SIZE 1000
-#define DECODE_SIZE 2
-#define OPERAND_SIZE 2
-#define RED_OPERAND_SIZE 6
-#define OPCODE_SIZE 4
-#define GROUP_SIZE 2
-#define RND_SIZE 2
-#define UNUSED_SIZE 1
-
 /*###############STRUCTURES#################*/
 typedef struct cmdNode {
 	word value;
