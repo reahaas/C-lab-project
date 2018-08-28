@@ -252,7 +252,12 @@ bool strToInt(const char *str, int *dest) {
 	return false;
 }/* End strToInt */
 
-/* Gets the next argument from the current line */
+/**
+ * Gets the next argument from the current line.
+ * @param src the current line as a string.
+ * @param dest string to put the next argument.
+ * @return true if it succesed, else return false.
+ */
 static bool getNextArg(char *src, char *dest) {
 	static char *cmdStr;
 	int inStr = 0, i;
@@ -263,7 +268,8 @@ static bool getNextArg(char *src, char *dest) {
 		cmdStr++;
 	if (*cmdStr == '\0')
 		return false;
-	for (i = 0; *cmdStr != ARG_SEPERATOR && *cmdStr != '\0'; cmdStr++) {
+	for (i = 0; (*cmdStr != ARG_SEPERATOR || *cmdStr != OPEN_PARENTHESIS || *cmdStr != CLOSE_PARENTHESIS )  && *cmdStr != '\0'; cmdStr++) /* TODO resolved the issue of JWP line */
+	{
 		if (inStr) {
 			if (*cmdStr == STR_DELIM)
 				inStr = 0;
