@@ -66,9 +66,8 @@ int addCmd(unsigned int decode, unsigned int destOperand,
 	newWord.cmd.destOperand = destOperand;
 	newWord.cmd.srcOperand = srcOperand;
 	newWord.cmd.opcode = opcode;
-	newWord.cmd.group = group;
-	newWord.cmd.rnd = rnd;
-	newWord.cmd.zeroBit = 0;
+	newWord.cmd.paramOne = group;
+	newWord.cmd.paramTwo = rnd;
 	if ((newNode = createCmdNode(newWord))
 			&& cmd_list.length + data_list.length < MAX_MEMORY_SIZE) {
 
@@ -101,8 +100,8 @@ void printCmdTable(void) {
 	cmdNode* curr = NULL;
 	printf("#\tValue\n");
 	for (curr = cmd_list.head; curr != NULL; curr = curr->next, lineNumber++) {
-		printf("%s\t%s\n", base10to32enc(lineNumber),
-				base10to32enc(curr->value.print));
+		printf("%s\t%s\n", base10to2Wierd(lineNumber),
+			   base10to2Wierd(curr->value.print));
 	}
 	printDataTable(cmd_list.length);
 }

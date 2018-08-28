@@ -1,8 +1,5 @@
 /*
  * firstRun.c
- *
- *  Created on: Jan 18, 2016
- *      Author: Gur
  */
 
 #include "assembler.h"
@@ -12,12 +9,19 @@
 
 static bool handleLine(input_line*);
 
+
+/**
+ * the first run count the ic, dc, and build the symbol table.
+ * @param src the file to run on.
+ * @return flag as according to if error found in the file or not (true/false).
+ */
 FLAG firstRun(FILE *src) {
 	input_line *line;
-	int lineIndex;
+	int lineIndex; /* num of row in the file */
 	fseek(src, 0L, SEEK_SET);
 	for (lineIndex = 1; true; lineIndex++) { /* Runs through all the lines. */
-		if ((line = getLine(src))) {
+		if ((line = getLine(src))) /* line is an object that contains all the data from one "string" line in the file. */
+		{
 			if (line->isEOF) {
 				freeLine(line);
 				break; /* End when EOF is encountered */

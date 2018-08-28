@@ -7,8 +7,6 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-add a b c d\
-
 /* Size constants */
 #define MAX_MEMORY_SIZE 1000
 #define MAX_FILE_ZISE 1000
@@ -19,12 +17,10 @@ add a b c d\
 #define OPERAND_SIZE 2
 #define RED_OPERAND_SIZE 6
 #define OPCODE_SIZE 4
-#define GROUP_SIZE 2
-#define RND_SIZE 2
-#define UNUSED_SIZE 1
-#define VALUE_SIZE 13
+#define PARAM_SIZE 2
+#define VALUE_SIZE 12
 #define OPCODES_AMOUNT 16
-#define WORD_SIZE 15
+#define WORD_SIZE 14
 #define REG_AMOUNT 8
 #define EXT_LEN 4 /* Length of the extension file name. */
 #define INPUT_EXT ".as"
@@ -45,7 +41,7 @@ enum ENCODE {
  */
 /* TODO fix the third addressing method rnd -> jump */
 typedef enum ADDRESSING {
-	IMD = 0, DIR, RND, REG
+	IMD = 0, DIR, JWP, REG
 } addressing;
 /* Arguments amount enums */
 enum NUM_OF_ARGS {
@@ -77,7 +73,7 @@ typedef enum {
 	STOP
 } OPCODE; /* !Retain the current order! see info in inst_type */
 
-typedef enum {
+typedef enum { /*fixme may be can erase*/
 	EMPTY, COMMENT, INSTUCTION, ACTION
 } sentence_type;
 typedef enum {

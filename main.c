@@ -1,13 +1,6 @@
 /*
  * main.c
- *
- *  Created on: Jan 11, 2016
- *      Author: Gur Telem
  */
-
- /* TODO change all the headers : names and dates */
-
-/* git test for branch dor-base-converter */
 
 #include "assembler.h"
 #include <string.h>
@@ -53,7 +46,7 @@ int main(int argc, char* argv[]) {
 FLAG assembler(FILE *src) {
 	flag = ASM_SUCCESS;
 
-	firstRun(src); /* if an error occur during the first run, flag turn to ASM_FAILURE */
+	firstRun(src); /* if an error occurs during the first run, flag turn to ASM_FAILURE */
 	if (flag == ASM_SUCCESS)
 		secondRun(src); /* if an error occur during the second run, flag turn to ASM_FAILURE */
 	if (flag == ASM_SUCCESS)

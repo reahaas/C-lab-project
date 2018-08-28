@@ -1,7 +1,4 @@
 /* assembler.c
- *
- *  Created on: Jan 31, 2016
- *      Author: gur
  */
 
 #include "assembler.h"
@@ -16,15 +13,18 @@ int strIndex = 0; /* Index for next read in the current line */
 /* Prototypes */
 static bool getNextArg(char *src, char *dest);
 static int getOp(const char **ops, const char *str, int opsAmount);
+static int getOpForValidLabel(const char **ops, const char *str, const int opsAmount);
 void trimmer(char * cmdStr, input_line * line);
 bool RecogniseLabelSection(char  * tmpStr, input_line * line);
 /* End prototypes */
 
+const char *ops[] = { "mov", "cmp", "add", "sub", "not", "clr", "lea",
+                      "inc", "dec", "jmp", "bne", "red", "prn", "jsr", "rts", "stop", /* Ops until here */
+                      ".data", ".string", ".entry", ".extern" }; /* Instructions *//* The order of these command stay identical to the order of the enum constants in constants.h so the index will match the enum value */
+
 /* Gets a line of code */
 input_line * getLine(FILE *input) {
-	const char *ops[] = { "mov", "cmp", "add", "sub", "not", "clr", "lea",
-			"inc", "dec", "jmp", "bne", "red", "prn", "jsr", "rts", "stop", /* Ops until here */
-			".data", ".string", ".entry", ".extern" }; /* Instructions *//* The order of these command stay identical to the order of the enum constants in constants.h so the index will match the enum value */
+
 	char cmdStr[LINE_MAX_LEN];
 	char tmpStr[LINE_MAX_LEN];
 	/* TODO : is needed???:  "char *p1, *p2;" */
@@ -48,7 +48,7 @@ input_line * getLine(FILE *input) {
 
 	if (!fgets(cmdStr, LINE_MAX_LEN, input)) { /* EOF encountered */
 		line->isEOF = true;
-		/* free(line->args) */  /* FIXME is this line is needed ???? */
+		/* free(line->args) */  /* FIXME is this line is needed ???? rea add */
 		return line;
 	}
 /* FIXME check the COMMENT_SIGN, is it the same as in our project?*/
@@ -64,10 +64,10 @@ input_line * getLine(FILE *input) {
 	}
 
 	trimmer(cmdStr, line); /* put in cmdStr the canonical form of itself */
-	if (line->isEffectless)
-		return line
+	if (line->isEffectless) /* FIXME is needed ??? */
+		return line;
 
-	sscanf(cmdStr, "%s", tmpStr);  /* copy the first string, which can be label, or command */
+	sscanf(cmdStr, "%s", tmpStr);  /* copy the first string, which can be label, or command, tmpStr will be comment or label */
 
 	if (!RecogniseLabelSection(tmpStr, line))   /* Recognise label section */
 		return NULL; /* error handle is in the function */
@@ -78,11 +78,6 @@ input_line * getLine(FILE *input) {
 		return NULL;
 	}
 
-	/**
-	 * cmdStr[strIndex] == cmdStr + strIndex
-	 * I->add r1 r2 r3
-	 *
-	 */
 
 	/* Recognises the operator */
 	if ((line->cmd = getOp(ops, tmpStr, sizeof(ops) / sizeof(ops[0]))) == -1) {
@@ -126,7 +121,7 @@ input_line * getLine(FILE *input) {
 	} /* End of get all the other arguments */
 
 	if ((length = i) > 0)
-		line->args = realloc(line->args, sizeof(char *) * length + 1); /* Can't fail because it's shrinking */
+		line->args = realloc(line->args, sizeof(char *) * length + 1); /* Can't fail because it's shrinking, the initial size of args is bigger or equal to the actual size of args */
 
 	/* End arguments section */
 	strIndex = 0;
@@ -141,7 +136,7 @@ input_line * getLine(FILE *input) {
  * @param line the input line object that builded for this line.
  */
 void trimmer(char * cmdStr, input_line * line){
-	char * p1, p2;
+	char *p1, *p2;
 
 	p1 = p2 = cmdStr;
 	while (isspace(*p2))
@@ -153,7 +148,7 @@ void trimmer(char * cmdStr, input_line * line){
 		return;
 	}
 
-	for (; p2 - cmdStr < length - 1; p2++) {
+	for (; p2 - cmdStr < (strlen(cmdStr) -1 ); p2++) { // length is not global !
 		if (isspace(*p2) && isspace(*(p2 + 1)))
 			continue;
 		*p1++ = isspace(*p2) ? SPACE : *p2;
@@ -168,19 +163,21 @@ void trimmer(char * cmdStr, input_line * line){
  * @param line
  * @return true while label is valid or it's not a label, otherwise false
  */
-bool RecogniseLabelSection(char  * tmpStr, input_line * line) {
-	if (tmpStr[(length = strlen(tmpStr)) - 1] == LABEL_DELIM) {
-		tmpStr[length - 1] = '\0';
-		if (validLabel(tmpStr, line)) {
+bool RecogniseLabelSection(char  * tmpStr, input_line *line) {
+    int length = (int)(strlen(tmpStr)) - 1;
+	if (tmpStr[(length)] == LABEL_DELIM){ // if in last place there is ':'
+		tmpStr[length] = '\0';
+		if (validLabel(tmpStr)){
 			if (copyStr(&(line->label), tmpStr))
-				strIndex += strlen(line->label) + 2;
+                strIndex += strlen(line->label) + 2;
+
 			else {
-				freeLine(line);
+				freeLine(line); /*doing free here don't need in label aswell*/
 				return false; /* Error msg is placed in copyStr */
 			}
 		} else {
 			error(sprintf(errMsg, ILLEGAL_LABEL, tmpStr));
-			freeLine(line);
+			freeLine(line); /*doing free here don't need in label aswell*/
 			return false;
 		}
 	} else {
@@ -203,13 +200,16 @@ void freeLine(input_line *line) {
 
 /* TODO add validCommand(tmpStr) {if(getOps())!= -1 : return false? return true;} to check if the label is a reserve word or not  */
 /* Validate whether the given str of a label is valid*/
-bool validLabel(const char *labelStr, input_line * line) {
+bool validLabel(const char *labelStr) {
 	int i;
 
+	if (getOpForValidLabel(ops,labelStr,(sizeof(ops) / sizeof(ops[0]))) != -1){
+		error(sprintf(errMsg, ILLEGAL_LABEL, labelStr));
+		return false;
+	}
 
-	if (validReg(tmpStr,line)) {/* Error. a label cannot be a register name */
-		error(sprintf(errMsg, ILLEGAL_LABEL, tmpStr));
-		freeLine(line);
+	if (validReg(labelStr)) {/* Error. a label cannot be a register name */
+		error(sprintf(errMsg, ILLEGAL_LABEL, labelStr));
 		return false;
 	}
 
@@ -305,3 +305,12 @@ static int getOp(const char **ops, const char *str, const int opsAmount) {
 	error(sprintf(errMsg, SYNTAX_ERROR UNKNOWN_OP));
 	return -1;
 }/* End getOp */
+
+
+static int getOpForValidLabel(const char **ops, const char *str, const int opsAmount){
+	int i;
+	for (i = 0; i < opsAmount; i++)
+		if (strcmp(str, ops[i]) == 0) /* Found the op */
+			return i;
+	return -1;
+}/* End getOpForValidLabel */

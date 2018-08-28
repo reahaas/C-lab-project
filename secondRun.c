@@ -1,10 +1,7 @@
 /*
  * secondRun.c
- *
- *  Created on: Jan 18, 2016
- *      Author: Gur Telem
  */
-#include <string.h> /*strlen*/
+#include <string.h>
 #include "assembler.h"
 #include "dataTable.h"
 #include "cmdTable.h"
@@ -69,7 +66,7 @@ static bool handleLine2(input_line* line) {
 					return false;
 				}
 				break;
-			case RND: /* TODO addressing rnd -> jump */
+			case JWP: /* TODO addressing rnd -> jump */
 				rnd = strlen(line->args[0]);
 				if (line->cmd == LEA && rnd != 3) {
 					error(sprintf(errMsg, WRONG_ARG_FOR_FUNC));
@@ -93,7 +90,7 @@ static bool handleLine2(input_line* line) {
 			case DIR:
 			case REG:
 				break;
-			case RND:  /* TODO addressing rnd -> jump */
+			case JWP:  /* TODO addressing rnd -> jump */
 			default:
 				return false;
 				break;
@@ -105,11 +102,8 @@ static bool handleLine2(input_line* line) {
 				multiReg.reg.destOperand = destArg.reg.destOperand;
 				multiReg.reg.srcOperand = srcArg.reg.srcOperand;
 				multiReg.reg.decode = ABS;
-				multiReg.reg.zeroBit = 0;
 				addArg(multiReg);
 			} else {
-				destArg.reg.zeroBit = 0;
-				srcArg.reg.zeroBit = 0;
 				if (srcAdders == DIR && srcArg.num.value == 0) {/* If the arg is external */
 					if (!addExt(line->args[0], getCmdLength() + 1)) {
 						return false;
@@ -159,7 +153,7 @@ static bool handleLine2(input_line* line) {
 				}
 				addArg(arg);
 				break;
-			case RND:   /* TODO addressing rnd -> jump */
+			case JWP:   /* TODO addressing rnd -> jump */
 			default:
 				return false;
 				break;
@@ -225,16 +219,15 @@ static addressing getArgWord(const char *str, word *wrd) {
 		};
 		switch (i) {
 		case 1:/* Random register */
-			wrd->reg.zeroBit = 0;
 			wrd->reg.decode = ABS;
 			wrd->reg.srcOperand = rand() % REG_AMOUNT;
 			wrd->reg.destOperand = 0;
-			return RND;
+			return JWP;
 			break; /* Just in case for future changes */
 		case 2:/* Random number */
 			wrd->num.decode = ABS;
 			wrd->num.value = rand() % (int) pow(2, VALUE_SIZE);
-			return RND;
+			return JWP;
 			break; /* Just in case for future changes */
 		case 3:/* Random address */
 			wrd->num.decode = RLC;
@@ -244,7 +237,7 @@ static addressing getArgWord(const char *str, word *wrd) {
 				return -1;
 			}
 			wrd->num.value = num;
-			return RND;
+			return JWP;
 			break; /* Just in case for future changes */
 		default:
 			break;
@@ -258,7 +251,6 @@ static addressing getArgWord(const char *str, word *wrd) {
 		wrd->num.value = num % (int) pow(2, VALUE_SIZE);
 		return IMD;
 	} else if (validReg(str)) {/* Is register name */
-		wrd->reg.zeroBit = 0;
 		wrd->reg.decode = ABS;
 		wrd->reg.destOperand = str[1] - '0';
 		wrd->reg.srcOperand = 0;

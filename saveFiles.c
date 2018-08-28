@@ -30,7 +30,6 @@ void saveFiles(void) {
 
 	name[strlen(name) - EXT_LEN + 1] = '\0';
 	strcat(name, EXT_EXT);
-	keep = true;
 
 	out = fopen(name, "w");
 	keep = saveExt(out, &i);
@@ -38,7 +37,6 @@ void saveFiles(void) {
 	if (!keep)
 		remove(name);
 
-	keep = true;
 	name[strlen(name) - EXT_LEN] = '\0';
 	strcat(name, ENT_EXT);
 	out = fopen(name, "w");
@@ -60,12 +58,12 @@ static bool saveObj(FILE *file, int *i) {
 			cmdAmount++;
 		}
 	}
-	fprintf(file, "%s\t%s\n", base10to32enc(cmdAmount),
-			base10to32enc(data_list.length));
+	fprintf(file, "%s\t%s\n", valueToBase10DecimalString(cmdAmount),
+			base10to2Wierd(data_list.length));
 	for (cmd_node = cmd_list.head; cmd_node != NULL;
 			cmd_node = cmd_node->next, (*i)++) {
-		fprintf(file, "%s\t%s\n", base10to32enc(*i),
-				base10to32enc(cmd_node->value.print));
+		fprintf(file, "%s\t%s\n", valueToBase10DecimalString(*i),
+				base10to2Wierd(cmd_node->value.print));
 	}
 	if (saveData(file, i))
 		return true;
@@ -83,8 +81,8 @@ bool saveData(FILE *file, int *i) {
 
 	for (data_node = data_list.head; data_node != NULL;
 			data_node = data_node->next, (*i)++) {
-		fprintf(file, "%s\t%s\n", base10to32enc(*i),
-				base10to32enc(data_node->value));
+		fprintf(file, "%s\t%s\n", valueToBase10DecimalString(*i),
+				base10to2Wierd(data_node->value));
 	}
 	if (start == *i)
 		return false;
@@ -99,7 +97,7 @@ bool saveExt(FILE *file, int *i) {
 	bool hasContent = false;
 
 	while ((name = popExt(&num))) {
-		fprintf(file, "%s\t%s\n", name, base10to32enc(num));
+		fprintf(file, "%s\t%s\n", name, valueToBase10DecimalString(num));
 		free(name);
 		hasContent = true;
 	}
@@ -113,7 +111,7 @@ bool saveEnt(FILE *file, int *i) {
 	bool hasContent = false;
 
 	while ((name = popEnt(&num))) {
-		fprintf(file, "%s\t%s\n", name, base10to32enc(num));
+		fprintf(file, "%s\t%s\n", name, valueToBase10DecimalString(num));
 		hasContent = true;
 	}
 	return hasContent;

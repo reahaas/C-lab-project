@@ -1,8 +1,5 @@
 /*
  * symbolTable.h
- *
- *  Created on: Mar 17, 2016
- *      Author: Gur Telem
  */
 
 #ifndef SYMBOL_H

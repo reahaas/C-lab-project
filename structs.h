@@ -1,8 +1,5 @@
 /*
  * structs.h
- *
- *  Created on: Jan 18, 2016
- *      Author: Gur
  */
 
 
@@ -15,9 +12,8 @@ typedef struct {
 	unsigned int destOperand: OPERAND_SIZE;
 	unsigned int srcOperand : OPERAND_SIZE;
 	unsigned int opcode 	: OPCODE_SIZE;
-	unsigned int group 		: GROUP_SIZE;
-	unsigned int rnd 		: RND_SIZE;
-	unsigned int zeroBit	: UNUSED_SIZE;
+	unsigned int paramOne 		: PARAM_SIZE;
+	unsigned int paramTwo 		: PARAM_SIZE;
 } cmd_word;
 
 /* Structure of an argument word */
@@ -31,14 +27,13 @@ typedef struct {
 	unsigned int decode 	: DECODE_SIZE;
 	unsigned int destOperand: RED_OPERAND_SIZE;
 	unsigned int srcOperand : RED_OPERAND_SIZE;
-	unsigned int zeroBit 	: UNUSED_SIZE;
 } reg_word;
 
 typedef union {
 	cmd_word cmd;
 	reg_word reg;
 	arg_word num;
-	unsigned int print :15;
+	unsigned int print :WORD_SIZE;
 } word;
 
 typedef struct{

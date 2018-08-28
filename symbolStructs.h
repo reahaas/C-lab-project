@@ -1,8 +1,5 @@
 /*
  * symbolStructs.h
- *
- *  Created on: Mar 18, 2016
- *      Author: gur
  */
 #ifndef SYMBOLSTRUCTS_H
 #define SYMBOLSTRUCTS_H
