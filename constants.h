@@ -1,15 +1,14 @@
 /*
  * constants.h
- *
- *  Created on: Jan 18, 2016
  */
 
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+/* TODO replace all the RND mentions by JWP*/
+
 /* Size constants */
 #define MAX_MEMORY_SIZE 1000
-#define MAX_FILE_ZISE 1000
 #define MEMORY_START 100
 #define LINE_MAX_LEN 81 /* Extra one for \0 */
 #define MAX_ARG_COUNT ((LINE_MAX_LEN - 3)/2 + 1) /* Max arg count assuming shortest command is 3 letters and shortest args are at least 1 character */
