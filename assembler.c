@@ -51,7 +51,7 @@ input_line * getLine(FILE *input) {
 		/* free(line->args) */  /* FIXME is this line is needed ???? rea add */
 		return line;
 	}
-/* FIXME check the COMMENT_SIGN, is it the same as in our project?*/
+
 	if ((length = strlen(cmdStr)) == 0 || sscanf(cmdStr, "%s", tmpStr) == 0 || tmpStr[0] == COMMENT_SIGN) { /* Check for effect-less line */
 		line->isEffectless = true;
 		free(line->args);
@@ -79,13 +79,13 @@ input_line * getLine(FILE *input) {
 	}
 
 
-	/* Recognises the operator */
+	/* Recognises the operator if not operand error it*/
 	if ((line->cmd = getOp(ops, tmpStr, sizeof(ops) / sizeof(ops[0]))) == -1) {
 		freeLine(line);
 		return NULL;
 	} else
 		strIndex += (strlen(tmpStr) + (strcmp(tmpStr, cmdStr + strIndex) == 0 ? 0 : 1)); /* check if it's the last word in the line */
-	if(line->cmd >= DOT_ENTRY){
+	if(line->cmd >= DOT_ENTRY){ /*if it a '.'/string/data or else*/
 		free(line->label);
 		line->label = NULL;
 	}
@@ -94,7 +94,7 @@ input_line * getLine(FILE *input) {
 	/* Separates arguments */
 	/* get the first argument */
 	i = 0;
-	if (!(status = getNextArg(cmdStr + strIndex, tmpStr))) {
+	if (!(status = getNextArg(cmdStr + strIndex, tmpStr))) { /*tmpstr will be destination of the wanted arg, this is boolian so return 1 if successful*/
 		free(line->args);
 		line->args = NULL;
 	} else if (status == -1)
@@ -102,7 +102,7 @@ input_line * getLine(FILE *input) {
 	else /* status is 1: success */
 	{
 		i++;
-		if (!(copyStr(&(line->args[0]), tmpStr))) {
+		if (!(copyStr(&(line->args[0]), tmpStr))) { /*first argument in, args is array of arrays */
 			freeLine(line);
 			return NULL;
 		}
@@ -114,13 +114,13 @@ input_line * getLine(FILE *input) {
 			freeLine(line);
 			return NULL;
 		}
-		if (!(copyStr(&(line->args[i]), tmpStr))) {
+		if (!(copyStr(&(line->args[i]), tmpStr))) { /*putting other arguments in to args*/
 			freeLine(line);
 			return NULL;
 		}
 	} /* End of get all the other arguments */
 
-	if ((length = i) > 0)
+	if ((length = i) > 0) /*length is number of arguments in*/
 		line->args = realloc(line->args, sizeof(char *) * length + 1); /* Can't fail because it's shrinking, the initial size of args is bigger or equal to the actual size of args */
 
 	/* End arguments section */
@@ -148,7 +148,7 @@ void trimmer(char * cmdStr, input_line * line){
 		return;
 	}
 
-	for (; p2 - cmdStr < (strlen(cmdStr) -1 ); p2++) { // length is not global !
+	for (; p2 - cmdStr < (strlen(cmdStr) -1 ); p2++) {
 		if (isspace(*p2) && isspace(*(p2 + 1)))
 			continue;
 		*p1++ = isspace(*p2) ? SPACE : *p2;
@@ -168,8 +168,8 @@ bool RecogniseLabelSection(char  * tmpStr, input_line *line) {
 	if (tmpStr[(length)] == LABEL_DELIM){ // if in last place there is ':'
 		tmpStr[length] = '\0';
 		if (validLabel(tmpStr)){
-			if (copyStr(&(line->label), tmpStr))
-                strIndex += strlen(line->label) + 2;
+			if (copyStr(&(line->label), tmpStr)) /*copying label in to line->label*/
+                strIndex += strlen(line->label) + 2; /*putting the string index after the label name example: MAIN: [here]*/
 
 			else {
 				freeLine(line); /*doing free here don't need in label aswell*/
@@ -198,7 +198,7 @@ void freeLine(input_line *line) {
 	free(line);
 }/* End freeLine */
 
-/* TODO add validCommand(tmpStr) {if(getOps())!= -1 : return false? return true;} to check if the label is a reserve word or not  */
+
 /* Validate whether the given str of a label is valid*/
 bool validLabel(const char *labelStr) {
 	int i;

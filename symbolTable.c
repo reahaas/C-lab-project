@@ -33,11 +33,11 @@ bool addLabel(char *labelName, int address, bool isExt, bool isOp) {
 		return false;
 	}
 	while (current) {/* Makes sure the label doesn't exist already */
-		if (strcmp(current->this->labelName, labelName) == 0) { /* True is label exists */
+		if (strcmp(current->this->labelName, labelName) == 0) { /* True the label exists */
 			error(sprintf(errMsg, MULTI_LABEL_DEF, labelName));
 			return false;
-		} else if (current->next) {
-			current = current->next;
+		} else if (current->next) {/*check the next one */
+			current = current->next;/*assign current to be the next current*/
 		} else
 			break;
 	}
@@ -48,10 +48,10 @@ bool addLabel(char *labelName, int address, bool isExt, bool isOp) {
 	if (newLabel == NULL)
 		return false; /* Return false if out of RAM */
 
-	if (!symbol_list.head)
+	if (!symbol_list.head)/*if it is the first symbol put in head of list */
 		symbol_list.head = newLabel;
 	else
-		current->next = newLabel;
+		current->next = newLabel; /*if it is not the head of list first, put in the next node */
 	return true;
 }/* End addLabel */
 
@@ -169,6 +169,7 @@ int getRandomAddress(void) {
 	return -1;
 }/* End getRandomAddress */
 
+/*TODO check if needed*/
 /* Searches the symbol table for the name given */
 bool findLabel(const char *name) {
 	return getLabel(name) ? true : false;
@@ -198,6 +199,7 @@ void freeSymbolTable(void) {
 	}
 }/* End freeSymbolTable */
 
+/*TODO check it */
 void printSymbolTable(void) {/* Debug only. */
 	labelNode *node = symbol_list.head;
 	printf("%s\t\t%s\t\t%s\t%s\n", "Label", "Address", "isExtern", "isOp");

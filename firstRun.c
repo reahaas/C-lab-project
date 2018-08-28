@@ -44,7 +44,7 @@ FLAG firstRun(FILE *src) {
 	return flag;
 }/* End firstRun */
 
-/* Analyses an line of code and operates accordingly */
+/* Analyses a line of code and operates accordingly,working by cases, if needed put in label list*/
 static bool handleLine(input_line* line) {
 	int isOp = false;
 	int isExt = false;
@@ -89,7 +89,7 @@ static bool handleLine(input_line* line) {
 		isOp = true;
 		/* Count lines */
 		if (hasLabel) {
-			if (!(addLabel(line->label, cmd_list.length, isExt, isOp))) {
+			if (!(addLabel(line->label, cmd_list.length, isExt, isOp))) {/*cmd_list.length = address */
 				return false;
 			}
 		}

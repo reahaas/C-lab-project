@@ -1,1 +1,15 @@
+/*is ready to run*/
 converter.c
+converter.c
+dataTable.c
+dataTable.h
+errorhandler.c
+symbolTable.c
+symbolTable.h
+main.c
+
+
+/*need to be changed*/
+firstRun.c -> handleline()
+constance.h -> change the macros
+errorhandler.h -> changes the macros
