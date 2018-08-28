@@ -86,6 +86,8 @@ typedef enum {
 #define IMD_FLAG '#'
 #define RND_FLAG '*'
 #define ARG_SEPERATOR ','
+#define OPEN_PARENTHESIS '('
+#define CLOSE_PARENTHESIS ')'
 #define SPACE ' '
 #define PARAN_OPEN "("
 #define PARAN_CLOSE ")"

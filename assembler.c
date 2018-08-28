@@ -44,48 +44,6 @@ const char *ops[] = { "mov", "cmp", "add", "sub", "not", "clr", "lea",
 	}
 }
 
-static bool getNextArg(char *src, char *dest){
-	static char *cmdStr;
-	int inStr = 0, i;
-	if (src != NULL) {
-		cmdStr = src;
-	}
-	while (isspace(*cmdStr))
-		cmdStr++;
-	if (*cmdStr == '\0')
-		return false;
-	for (i = 0; *cmdStr != ARG_SEPERATOR && *cmdStr != '\0'; cmdStr++) {
-		if (inStr) {
-			if (*cmdStr == STR_DELIM)
-				inStr = 0;
-		} else if (isspace(*cmdStr))
-			break;
-		else if (*cmdStr == STR_DELIM) { // if starts a string
-			inStr = 1;
-		}
-		dest[i] = *cmdStr; // will t
-		i++;
-	} // end of for
-	if (i == 0) {
-		error(sprintf(errMsg, SYNTAX_ERROR EMPTY_ARG));
-		return -1;
-	}
-	while (isspace(*cmdStr))
-		cmdStr++;
-	if (*cmdStr != '\0' && *cmdStr != ARG_SEPERATOR) {
-		error(sprintf(errMsg, SYNTAX_ERROR UNKNOWN_ARG_TYPE));
-		return -1;
-	}
-	dest[i] = '\0';
-	if (*cmdStr == ARG_SEPERATOR) {
-		cmdStr++;
-		if (*cmdStr == '\0') {
-			error(sprintf(errMsg, SYNTAX_ERROR EMPTY_ARG));
-			return -1;
-		}
-	}
-	return true;
-}
 
 /* Gets a line of code */
 input_line * getLine(FILE *input) {
@@ -223,7 +181,7 @@ void trimmer(char * cmdStr, input_line * line){
 		*p1++ = isspace(*p2) ? SPACE : *p2;
 	}
 	*p1 = '\0';
-
+	printf("%s\n", cmdStr); /* TODO remove this print (rea add) */
 }/* End trimmer */
 
 /**
@@ -324,7 +282,54 @@ bool strToInt(const char *str, int *dest) {
 /* Gets the next argument from the current line */
 /* End getNextArg */
 
-
+/**
+ * Gets the next argument from the current line.
+ * @param src the current line as a string.
+ * @param dest string to put the next argument.
+ * @return true if it succesed, else return false.
+ */
+static bool getNextArg(char *src, char *dest){
+    static char *cmdStr;
+    int inStr = 0, i;
+    if (src != NULL) {
+        cmdStr = src;
+    }
+    while (isspace(*cmdStr))
+        cmdStr++;
+    if (*cmdStr == '\0')
+        return false;
+    for (i = 0; *cmdStr != ARG_SEPERATOR && *cmdStr != '\0'; cmdStr++) {
+        if (inStr) {
+            if (*cmdStr == STR_DELIM)
+                inStr = 0;
+        } else if (isspace(*cmdStr))
+            break;
+        else if (*cmdStr == STR_DELIM) { // if starts a string
+            inStr = 1;
+        }
+        dest[i] = *cmdStr; // will t
+        i++;
+    } // end of for
+    if (i == 0) {
+        error(sprintf(errMsg, SYNTAX_ERROR EMPTY_ARG));
+        return -1;
+    }
+    while (isspace(*cmdStr))
+        cmdStr++;
+    if (*cmdStr != '\0' && *cmdStr != ARG_SEPERATOR) {
+        error(sprintf(errMsg, SYNTAX_ERROR UNKNOWN_ARG_TYPE));
+        return -1;
+    }
+    dest[i] = '\0';
+    if (*cmdStr == ARG_SEPERATOR) {
+        cmdStr++;
+        if (*cmdStr == '\0') {
+            error(sprintf(errMsg, SYNTAX_ERROR EMPTY_ARG));
+            return -1;
+        }
+    }
+    return true;
+}
 
 /* Find the operator in the given op list*/
 static int getOp(const char **ops, const char *str, const int opsAmount) {
