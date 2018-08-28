@@ -208,7 +208,7 @@ static addressing getArgWord(const char *str, word *wrd) {
 	int num, i;
 	label *lbl;
 
-	if (str[0] == RND_FLAG) {/* Is random */
+	if (str[0] == RND_FLAG) {/* Is random */ /* TODO change RND -> JWP */
 		i = 0;
 		while (str[++i]) {
 			if (str[i] != RND_FLAG) {
