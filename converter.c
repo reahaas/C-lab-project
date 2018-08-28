@@ -26,13 +26,14 @@
 char * base10to2Wierd(long unsigned int value) {
 	int i;
 	const char base2[3] = "./";
-	char *numInBaseWeird2 = (char *) malloc(WORD_SIZE ); /* TODO is the (-1) is needed?? */
+	char *numInBaseWeird2 = (char *) malloc(WORD_SIZE + 1); /* TODO is the (-1) is needed?? */
 	if (!numInBaseWeird2) {
 		return NULL;
 	}
 	for (i=0; i < WORD_SIZE ;i++){
 		numInBaseWeird2[i] = '.';
 	}
+	numInBaseWeird2[WORD_SIZE] = '\n'; /* the end of the string */
 	while(value!=0)
 	{
 		numInBaseWeird2[i] = base2[value%2];
