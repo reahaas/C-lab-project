@@ -1,8 +1,5 @@
 /*
  * firstRun.c
- *
- *  Created on: Jan 18, 2016
- *      Author: Gur
  */
 
 #include "assembler.h"

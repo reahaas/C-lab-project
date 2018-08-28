@@ -1,6 +1,5 @@
 /*
  * converter.h
- *	Description: Header for converter.
  */
 
 #ifndef CONVERTER_H

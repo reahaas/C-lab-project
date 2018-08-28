@@ -1,8 +1,5 @@
 /*
  * errorHandler.c
- *
- *  Created on: Jan 31, 2016
- *      Author: Gur Telem
  */
 
 #include "errorHandler.h"

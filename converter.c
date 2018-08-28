@@ -1,13 +1,12 @@
 /*
- * converer.c
- *	Description: Converts number from different bases.
+ * converter.c
  */
 
 #include "assembler.h"    
 #include "converter.h"
 #include <math.h>
-// double log2(double);/* Throws an error without it for some reason */
 
+/*TODO all is running good delete, for now it is here for example if needed.*/
 /*char* base10to32enc(long unsigned int value) {
 	char buffer[WORD_SIZE + 2];
 	char *tmp;

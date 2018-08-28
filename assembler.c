@@ -1,7 +1,4 @@
 /* assembler.c
- *
- *  Created on: Jan 31, 2016
- *      Author: gur
  */
 
 #include "assembler.h"

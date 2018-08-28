@@ -30,7 +30,6 @@ void saveFiles(void) {
 
 	name[strlen(name) - EXT_LEN + 1] = '\0';
 	strcat(name, EXT_EXT);
-	keep = true;
 
 	out = fopen(name, "w");
 	keep = saveExt(out, &i);
@@ -38,7 +37,6 @@ void saveFiles(void) {
 	if (!keep)
 		remove(name);
 
-	keep = true;
 	name[strlen(name) - EXT_LEN] = '\0';
 	strcat(name, ENT_EXT);
 	out = fopen(name, "w");

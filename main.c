@@ -1,11 +1,6 @@
 /*
  * main.c
- *
- *  Created on: Jan 11, 2016
- *      Author: Gur Telem
  */
-
- /* TODO change all the headers : names and dates */
 
 
 #include "assembler.h"

@@ -1,10 +1,7 @@
 /*
  * secondRun.c
- *
- *  Created on: Jan 18, 2016
- *      Author: Gur Telem
  */
-#include <string.h> /*strlen*/
+#include <string.h>
 #include "assembler.h"
 #include "dataTable.h"
 #include "cmdTable.h"
