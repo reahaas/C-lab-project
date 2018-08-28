@@ -268,7 +268,7 @@ static bool getNextArg(char *src, char *dest) {
 		cmdStr++;
 	if (*cmdStr == '\0')
 		return false;
-	for (i = 0; (*cmdStr != ARG_SEPERATOR || *cmdStr != OPEN_PARENTHESIS || *cmdStr != CLOSE_PARENTHESIS )  && *cmdStr != '\0'; cmdStr++) /* TODO resolved the issue of JWP line */
+	for (i = 0; (*cmdStr != ARG_SEPERATOR && *cmdStr != OPEN_PARENTHESIS && *cmdStr != CLOSE_PARENTHESIS )  && *cmdStr != '\0'; cmdStr++) /* TODO resolved the issue of JWP line */
 	{
 		/* TODO printf("%s\n", cmdStr); */ /* TODO remove this print (rea add) */
 		if (inStr) {
