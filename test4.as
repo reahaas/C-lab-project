@@ -1,4 +1,5 @@
 LENGTH:     .data    6,-9,15
+LENGTH:     .data    6 ,-9 ,15
 MAIN: mov r3 ,LENGTH
 
 prn #-5
