@@ -154,7 +154,7 @@ void trimmer(char * cmdStr, input_line * line){
 		*p1++ = isspace(*p2) ? SPACE : *p2;
 	}
 	*p1 = '\0';
-
+	printf("%s\n", cmdStr); /* TODO remove this print (rea add) */
 }/* End trimmer */
 
 /**
@@ -270,6 +270,7 @@ static bool getNextArg(char *src, char *dest) {
 		return false;
 	for (i = 0; (*cmdStr != ARG_SEPERATOR || *cmdStr != OPEN_PARENTHESIS || *cmdStr != CLOSE_PARENTHESIS )  && *cmdStr != '\0'; cmdStr++) /* TODO resolved the issue of JWP line */
 	{
+		/* TODO printf("%s\n", cmdStr); */ /* TODO remove this print (rea add) */
 		if (inStr) {
 			if (*cmdStr == STR_DELIM)
 				inStr = 0;
@@ -299,6 +300,7 @@ static bool getNextArg(char *src, char *dest) {
 			return -1;
 		}
 	}
+	printf("%s\n", dest); /* TODO remove this print (rea add) */
 	return true;
 }/* End getNextArg */
 
