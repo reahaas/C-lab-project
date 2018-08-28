@@ -30,7 +30,7 @@ char * base10to2Wierd(long unsigned int value) {
 	if (!numInBaseWeird2) {
 		return NULL;
 	}
-	for (i=0; i < WORD_SIZE - 1 ;i++){
+	for (i=0; i < WORD_SIZE ;i++){
 		numInBaseWeird2[i] = '.';
 	}
 	while(value!=0)
