@@ -105,7 +105,7 @@ static bool handleLine(input_line* line) {
 					/* Failed to add a label error */
 				}
 			}
-			while (*arg != NULL) {
+			while (*arg != NULL){
 				int num;
 				char* rst;
 				/* Convert string to int */

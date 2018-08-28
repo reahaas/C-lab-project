@@ -203,7 +203,7 @@ static bool handleLine2(input_line* line) {
 	}
 	return true;
 }/* End handleLine2 */
-
+/*TODO change this or delete*/
 static addressing getArgWord(const char *str, word *wrd) {
 	int num, i;
 	label *lbl;

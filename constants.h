@@ -87,7 +87,8 @@ typedef enum {
 #define RND_FLAG '*'
 #define ARG_SEPERATOR ','
 #define SPACE ' '
-
+#define PARAN_OPEN "("
+#define PARAN_CLOSE ")"
 /* Flag status */
 typedef enum {
 	ASM_SUCCESS, ASM_FAILURE
