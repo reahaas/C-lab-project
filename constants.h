@@ -73,9 +73,6 @@ typedef enum {
 	STOP
 } OPCODE; /* !Retain the current order! see info in inst_type */
 
-typedef enum { /*fixme may be can erase*/
-	EMPTY, COMMENT, INSTUCTION, ACTION
-} sentence_type;
 typedef enum {
 	DOT_DATA = OPCODES_AMOUNT, DOT_STRING, DOT_ENTRY, DOT_EXTERN
 } inst_type; /* The order this enum and the OPCODE must stay identical to the order of the "ops" array in the getLine function so the index will match the enums values*/
@@ -92,7 +89,8 @@ typedef enum {
 #define OPEN_PARENTHESIS '('
 #define CLOSE_PARENTHESIS ')'
 #define SPACE ' '
-
+#define PARAN_OPEN "("
+#define PARAN_CLOSE ")"
 /* Flag status */
 typedef enum {
 	ASM_SUCCESS, ASM_FAILURE

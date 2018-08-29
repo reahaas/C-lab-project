@@ -44,7 +44,7 @@ FLAG firstRun(FILE *src) {
 	return flag;
 }/* End firstRun */
 
-/* Analyses an line of code and operates accordingly */
+/* Analyses a line of code and operates accordingly,working by cases, if needed put in label list*/
 static bool handleLine(input_line* line) {
 	int isOp = false;
 	int isExt = false;

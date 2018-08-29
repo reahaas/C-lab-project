@@ -3,6 +3,7 @@
 
 #include "assembler.h"
 #include "errorHandler.h"
+#include "string.h"
 
 /*############EXTERN VARIABLES#############*/
 FLAG flag; /* 0 for Success, non zero for failure */
@@ -21,6 +22,28 @@ bool RecogniseLabelSection(char  * tmpStr, input_line * line);
 const char *ops[] = { "mov", "cmp", "add", "sub", "not", "clr", "lea",
                       "inc", "dec", "jmp", "bne", "red", "prn", "jsr", "rts", "stop", /* Ops until here */
                       ".data", ".string", ".entry", ".extern" }; /* Instructions *//* The order of these command stay identical to the order of the enum constants in constants.h so the index will match the enum value */
+
+ static bool handleForAddressing2(char *src, input_line *line){
+    static char *label1,*param1,*param2;
+
+	if (!validLabel(label1 =  strtok(src ,PARAN_OPEN))){
+	return false;
+	}
+	else if ((!validLabelForAdrresing2(param1 = strtok(NULL,","))) &&
+	(!validReg(param1 = strtok(NULL,","))) && (!validNumber(param1 = strtok(NULL,","))))
+	{ return false;}
+
+	else if ((!validLabelForAdrresing2(param2 = strtok(NULL, PARAN_CLOSE))) &&
+		(!validReg(param2 = strtok(NULL, PARAN_CLOSE))) && (!validNumber(param2 = strtok(NULL,PARAN_CLOSE))))
+	{ return false;}
+	else{
+		line->args[0] = label1;
+		line->args[1] = param1;
+		line->args[2] = param2;
+		return true;
+	}
+}
+
 
 /* Gets a line of code */
 input_line * getLine(FILE *input) {
@@ -51,7 +74,7 @@ input_line * getLine(FILE *input) {
 		/* free(line->args) */  /* FIXME is this line is needed ???? rea add */
 		return line;
 	}
-/* FIXME check the COMMENT_SIGN, is it the same as in our project?*/
+
 	if ((length = strlen(cmdStr)) == 0 || sscanf(cmdStr, "%s", tmpStr) == 0 || tmpStr[0] == COMMENT_SIGN) { /* Check for effect-less line */
 		line->isEffectless = true;
 		free(line->args);
@@ -79,51 +102,55 @@ input_line * getLine(FILE *input) {
 	}
 
 
-	/* Recognises the operator */
+	/* Recognises the operator if not operand error it*/
 	if ((line->cmd = getOp(ops, tmpStr, sizeof(ops) / sizeof(ops[0]))) == -1) {
 		freeLine(line);
 		return NULL;
 	} else
 		strIndex += (strlen(tmpStr) + (strcmp(tmpStr, cmdStr + strIndex) == 0 ? 0 : 1)); /* check if it's the last word in the line */
-	if(line->cmd >= DOT_ENTRY){
+	if(line->cmd >= DOT_ENTRY){ /*if it a '.'/string/data or else*/
 		free(line->label);
 		line->label = NULL;
 	}
 	/* End operator section */
 
-	/* Separates arguments */
-	/* get the first argument */
-	i = 0;
-	if (!(status = getNextArg(cmdStr + strIndex, tmpStr))) {
-		free(line->args);
-		line->args = NULL;
-	} else if (status == -1)
-		return NULL;
-	else /* status is 1: success */
-	{
-		i++;
-		if (!(copyStr(&(line->args[0]), tmpStr))) {
-			freeLine(line);
+	if (!(handleForAddressing2(cmdStr + strIndex, line))){
+		/* Separates arguments */
+		/* get the first argument */
+		i = 0;
+		if (!(status = getNextArg(cmdStr + strIndex,
+								  tmpStr))) { /*tmpstr will be destination of the wanted arg, this is boolian so return 1 if successful*/
+			free(line->args);
+			line->args = NULL;
+		} else if (status == -1)
 			return NULL;
-		}
-	} /* End of get the first argument */
+		else /* status is 1: success */
+		{
+			i++;
+			if (!(copyStr(&(line->args[0]), tmpStr))) { /*first argument in. args is array of arrays */
+				freeLine(line);
+				return NULL;
+			}
+		} /* End of get the first argument */
 
-	/* get all the other arguments */
-	for (; (status = getNextArg(NULL, tmpStr)); i++) {
-		if (status == -1){
-			freeLine(line);
-			return NULL;
-		}
-		if (!(copyStr(&(line->args[i]), tmpStr))) {
-			freeLine(line);
-			return NULL;
-		}
-	} /* End of get all the other arguments */
+		/* get all the other arguments */
+		for (; (status = getNextArg(NULL, tmpStr)); i++) {
+			if (status == -1) {
+				freeLine(line);
+				return NULL;
+			}
+			if (!(copyStr(&(line->args[i]), tmpStr))) { /*putting other arguments in to args*/
+				freeLine(line);
+				return NULL;
+			}
+		} /* End of get all the other arguments */
+		//}
+		if ((length = i) > 0) /*length is number of arguments in*/
+			line->args = realloc(line->args, sizeof(char *) * length +
+											 1); /* Can't fail because it's shrinking, the initial size of args is bigger or equal to the actual size of args */
 
-	if ((length = i) > 0)
-		line->args = realloc(line->args, sizeof(char *) * length + 1); /* Can't fail because it's shrinking, the initial size of args is bigger or equal to the actual size of args */
-
-	/* End arguments section */
+		/* End arguments section */
+	}
 	strIndex = 0;
 	return line;
 }/* End getLine */
@@ -148,7 +175,7 @@ void trimmer(char * cmdStr, input_line * line){
 		return;
 	}
 
-	for (; p2 - cmdStr < (strlen(cmdStr) -1 ); p2++) { // length is not global !
+	for (; p2 - cmdStr < (strlen(cmdStr) -1 ); p2++) {
 		if (isspace(*p2) && isspace(*(p2 + 1)))
 			continue;
 		*p1++ = isspace(*p2) ? SPACE : *p2;
@@ -168,8 +195,8 @@ bool RecogniseLabelSection(char  * tmpStr, input_line *line) {
 	if (tmpStr[(length)] == LABEL_DELIM){ // if in last place there is ':'
 		tmpStr[length] = '\0';
 		if (validLabel(tmpStr)){
-			if (copyStr(&(line->label), tmpStr))
-                strIndex += strlen(line->label) + 2;
+			if (copyStr(&(line->label), tmpStr)) /*copying label in to line->label*/
+                strIndex += strlen(line->label) + 2; /*putting the string index after the label name example: MAIN: [here]*/
 
 			else {
 				freeLine(line); /*doing free here don't need in label aswell*/
@@ -198,7 +225,7 @@ void freeLine(input_line *line) {
 	free(line);
 }/* End freeLine */
 
-/* TODO add validCommand(tmpStr) {if(getOps())!= -1 : return false? return true;} to check if the label is a reserve word or not  */
+
 /* Validate whether the given str of a label is valid*/
 bool validLabel(const char *labelStr) {
 	int i;
@@ -244,7 +271,7 @@ bool copyStr(char **dest, const char *src) {
 bool strToInt(const char *str, int *dest) {
 	int num;
 	char *end;
-	num = strtol(str, &end, 10);
+	num = (int) strtol(str, &end, 10);
 	if (strcmp(end, "") == 0) {
 		*dest = num;
 		return true;
@@ -252,57 +279,57 @@ bool strToInt(const char *str, int *dest) {
 	return false;
 }/* End strToInt */
 
+/* Gets the next argument from the current line */
+/* End getNextArg */
+
 /**
  * Gets the next argument from the current line.
  * @param src the current line as a string.
  * @param dest string to put the next argument.
  * @return true if it succesed, else return false.
  */
-static bool getNextArg(char *src, char *dest) {
-	static char *cmdStr;
-	int inStr = 0, i;
-	if (src != NULL) {
-		cmdStr = src;
-	}
-	while (isspace(*cmdStr))
-		cmdStr++;
-	if (*cmdStr == '\0')
-		return false;
-	for (i = 0; (*cmdStr != ARG_SEPERATOR  )  && *cmdStr != '\0'; cmdStr++) /* TODO resolved the issue of JWP line */
-	{
-		/* TODO printf("%s\n", cmdStr); */ /* TODO remove this print (rea add) */
-		if (inStr) {
-			if (*cmdStr == STR_DELIM)
-				inStr = 0;
-		} else if (isspace(*cmdStr))
-			break;
-		else if (*cmdStr == STR_DELIM) {
-			inStr = 1;
-		}
-		dest[i] = *cmdStr;
-		i++;
-	}
-	if (i == 0) {
-		error(sprintf(errMsg, SYNTAX_ERROR EMPTY_ARG));
-		return -1;
-	}
-	while (isspace(*cmdStr))
-		cmdStr++;
-	if (*cmdStr != '\0' && *cmdStr != ARG_SEPERATOR) {
-		error(sprintf(errMsg, SYNTAX_ERROR UNKNOWN_ARG_TYPE));
-		return -1;
-	}
-	dest[i] = '\0';
-	if (*cmdStr == ARG_SEPERATOR) {
-		cmdStr++;
-		if (*cmdStr == '\0') {
-			error(sprintf(errMsg, SYNTAX_ERROR EMPTY_ARG));
-			return -1;
-		}
-	}
-	printf("%s\n", dest); /* TODO remove this print (rea add) */
-	return true;
-}/* End getNextArg */
+static bool getNextArg(char *src, char *dest){
+    static char *cmdStr;
+    int inStr = 0, i;
+    if (src != NULL) {
+        cmdStr = src;
+    }
+    while (isspace(*cmdStr))
+        cmdStr++;
+    if (*cmdStr == '\0')
+        return false;
+    for (i = 0; *cmdStr != ARG_SEPERATOR && *cmdStr != '\0'; cmdStr++) {
+        if (inStr) {
+            if (*cmdStr == STR_DELIM)
+                inStr = 0;
+        } else if (isspace(*cmdStr))
+            break;
+        else if (*cmdStr == STR_DELIM) { // if starts a string
+            inStr = 1;
+        }
+        dest[i] = *cmdStr; // will t
+        i++;
+    } // end of for
+    if (i == 0) {
+        error(sprintf(errMsg, SYNTAX_ERROR EMPTY_ARG));
+        return -1;
+    }
+    while (isspace(*cmdStr))
+        cmdStr++;
+    if (*cmdStr != '\0' && *cmdStr != ARG_SEPERATOR) {
+        error(sprintf(errMsg, SYNTAX_ERROR UNKNOWN_ARG_TYPE));
+        return -1;
+    }
+    dest[i] = '\0';
+    if (*cmdStr == ARG_SEPERATOR) {
+        cmdStr++;
+        if (*cmdStr == '\0') {
+            error(sprintf(errMsg, SYNTAX_ERROR EMPTY_ARG));
+            return -1;
+        }
+    }
+    return true;
+}
 
 /* Find the operator in the given op list*/
 static int getOp(const char **ops, const char *str, const int opsAmount) {
@@ -322,3 +349,34 @@ static int getOpForValidLabel(const char **ops, const char *str, const int opsAm
 			return i;
 	return -1;
 }/* End getOpForValidLabel */
+
+bool validNumber(char *str){
+	int num;
+	if (str[0] == IMD_FLAG) {/* Is immediate number */
+		if (!strToInt(str + 1, &num)) {
+			error(sprintf(errMsg, SYNTAX_ERROR UNKNOWN_ARG_TYPE));
+			return -1;
+		}
+	}
+}
+
+bool validLabelForAdrresing2(char* labelStr){ /*WITHOUT VALID REG*/
+	int i;
+
+	if (getOpForValidLabel(ops,labelStr,(sizeof(ops) / sizeof(ops[0]))) != -1){
+		error(sprintf(errMsg, ILLEGAL_LABEL, labelStr));
+		return false;
+	}
+	if (!isalpha(labelStr[0])) {/* Starts with alphabetic */
+		return false;
+	} else {
+		for (i = 1; labelStr[i]; i++) {/* Rest is alphanumeric */
+			if (!isalnum(labelStr[i]))
+				return false;
+		}
+		return true;
+	}
+}/* End validLabel */
+
+
+

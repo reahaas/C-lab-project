@@ -1,3 +1,4 @@
+jmp L1(N,W)
 MAIN:   mov ***, LENGTH
     add r2,STR
 LOOP: jmp   END
