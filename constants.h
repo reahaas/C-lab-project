@@ -19,6 +19,7 @@
 #define OPCODE_SIZE 4
 #define PARAM_SIZE 2
 #define VALUE_SIZE 12
+#define IRELEVANT_BITS 0
 #define OPCODES_AMOUNT 16
 #define WORD_SIZE 14
 #define REG_AMOUNT 8
@@ -86,8 +87,8 @@ typedef enum {
 #define IMD_FLAG '#'
 #define RND_FLAG '*'
 #define ARG_SEPERATOR ','
-#define OPEN_PARENTHESIS '('
-#define CLOSE_PARENTHESIS ')'
+#define OPEN_PARENTHESIS "("
+#define CLOSE_PARENTHESIS ")"
 #define SPACE ' '
 #define PARAN_OPEN "("
 #define PARAN_CLOSE ")"

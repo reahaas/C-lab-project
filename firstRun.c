@@ -49,7 +49,7 @@ static bool handleLine(input_line* line) {
 	int isOp = false;
 	int isExt = false;
 	int hasLabel = (line->label ? true : false);
-	int wordCounter = 0;
+	int wordCounter = 0; // counts the amount of words need to be in the memory
 	switch (line->cmd) {
     /* Two operands group */
     case MOV:
@@ -98,11 +98,12 @@ static bool handleLine(input_line* line) {
     case JMP:
     case JSR:
     case BNE:
+        /*dont forget the may can be that has */
         if (line->args != NULL ) { /* jump first argument is a label */
             wordCounter++;
-            if(line->args[1] != NULL && line->args[2] != NULL ){
+            if(line->args[1] != NULL && line->args[2] != NULL ){ /*if it is addressing 2*/
                 wordCounter++;
-                if(!validReg(line->args[1]) || !validReg(line->args[2]) )
+                if(!validReg(line->args[1]) || !validReg(line->args[2]))
                     wordCounter++;
             }
         } else {
