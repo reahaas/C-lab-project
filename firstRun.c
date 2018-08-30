@@ -49,7 +49,7 @@ static bool handleLine(input_line* line) {
 	int isOp = false;
 	int isExt = false;
 	int hasLabel = (line->label ? true : false);
-	int wordCounter = 0; // counts the amount of words need to be in the memory
+	int wordCounter = 0; /* counts the amount of words need to be in the memory */
 	switch (line->cmd) {
     /* Two operands group */
     case MOV:
