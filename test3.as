@@ -2,13 +2,13 @@
 .entry LENGTH
 .extern L3
 .extern W
-MAIN: mov ***, W
+MAIN: mov r1, W
 		   add r2,STR
 LOOP: jmp W
 prn #-5
 sub r1, r4
 inc K
-mov **,r3
+mov r2,r3
 bne L3
 END: stop
 STR: .string "abcdef"

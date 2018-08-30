@@ -1,14 +1,14 @@
 
 LOOP: jmp   END
 jmp L1(N,W)
-MAIN:   mov ***, LENGTH
+MAIN:   mov r1, LENGTH
     add r2,STR
 
 
     prn #-5
     sub r1, r4
     inc K
-    mov **,r3
+    mov r4,r3
     bne LOOP
 
 STR: .string "abcdef"

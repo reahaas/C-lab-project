@@ -6,7 +6,7 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
-/* Structure of an operation (command) word */ /* TODO bit understand and changes */
+/* Structure of an operation (command) word */
 typedef struct {/*p00 p00 oc0000 s00 d00 dc00 */
 	unsigned int decode 	: DECODE_SIZE;
 	unsigned int destOperand: OPERAND_SIZE;

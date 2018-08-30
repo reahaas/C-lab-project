@@ -127,9 +127,9 @@ static bool handleLine2(input_line* line) {
 	case DEC:
 	case RED:
 	case PRN:
-		/*	argslabel = line-> args[0];
+		argslabel = line-> args[0];
 			args2 = line -> args[1];
-			args3 = line -> args[2];*/
+			args3 = line -> args[2];
 			if (line->args != NULL && line->args[1] == NULL) { /* Only one arg*/
 			addressing adders; /*can be 0,1,2,3*/
 			word arg;
@@ -161,8 +161,6 @@ static bool handleLine2(input_line* line) {
 				break;
 		}
 		break;
-
-	/*TODO what happens in this case*/
 
 	case JSR:
 	case BNE:
@@ -207,8 +205,8 @@ static bool handleLine2(input_line* line) {
 
 			if (addresArgOne == REG && (addresArgTwo == REG )) {
 				word multiReg;
-				multiReg.reg.destOperand = addresArgTwo.reg.destOperand;
-				multiReg.reg.srcOperand = addresArgOne.reg.srcOperand;
+				multiReg.reg.destOperand = argTwo.reg.destOperand;
+				multiReg.reg.srcOperand = argOne.reg.srcOperand;
 				multiReg.reg.decode = ABS;
 				addArg(multiReg);
 			} else {
@@ -235,13 +233,11 @@ static bool handleLine2(input_line* line) {
 	case DOT_ENTRY:
 		if (line->args != NULL && line->args[1] == NULL) {
 			label* entLable;
-			/* TODO: check*/
 			if ((entLable = getLabel(line->args[0])) != NULL) {
 				if (!(addEnt(entLable))) {
 					return false;
 				}
 			} else {
-				/* TODO:  */
 				error(sprintf(errMsg, ENT_TO_UNDEF, line->args[0]));
 				return false;
 			}
@@ -261,7 +257,7 @@ static bool handleLine2(input_line* line) {
 	return true;
 }/* End handleLine2 */
 
-/*TODO change this or delete*/
+
 static addressing getArgWord(const char *str, word *wrd) { /*wrd is srcArg or desrArg*/
 	int num;
 	label *lbl;
@@ -272,7 +268,7 @@ static addressing getArgWord(const char *str, word *wrd) { /*wrd is srcArg or de
 			return -1;
 		}
 		wrd->num.decode = ABS;
-		wrd->num.value = num % (int) pow(2, VALUE_SIZE);  /* TODO fix that whole function to feat to JWP */
+		wrd->num.value =  num % (int) pow(2, VALUE_SIZE);  /* modulo on binary number remains only the less significant digits */
 		return IMD;
 	} else if (validReg(str)) {/* Is register name */
 		wrd->reg.decode = ABS;

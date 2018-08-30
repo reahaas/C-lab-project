@@ -17,7 +17,6 @@ bool addLabel(char *labelName, int address, bool isExt, bool isOp);
 void printSymbolTable(void);/* This function is for debug only */
 void freeSymbolTable(void);
 label *getLabel(const char *name);
-int getRandomAddress(void);
 bool addExt(char *name, int address);
 char *popExt(int *address);
 bool addEnt(label *lbl);

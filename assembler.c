@@ -24,20 +24,18 @@ const char *ops[] = { "mov", "cmp", "add", "sub", "not", "clr", "lea",
                       ".data", ".string", ".entry", ".extern" }; /* Instructions *//* The order of these command stay identical to the order of the enum constants in constants.h so the index will match the enum value */
 
  static bool handleForAddressing2(char *src, input_line *line){ /* TODO validation if u have space or should be false*/
-    static char *label1,*param1,*param2,*check = NULL;
+    static char *label1,*param1,*param2,*isContainParanatist = NULL;
     char* args0,*args1,*args2;
-	  check = strchr(src, '(');
-		if(check != NULL){
-		if (!validLabel(label1 = strtok(src, PARAN_OPEN))){
-			return false;
+	  isContainParanatist = strchr(src, '(');
+		if(isContainParanatist != NULL){
+			if (!validLabel(label1 = strtok(src, OPEN_PARENTHESIS))){
+				return false;
 		} else if ((!validLabelForAdrresing2(param1 = strtok(NULL, ","))) &&
-				   (!validReg(param1) &&
-				   (!validNumber(param1))))
+				   (!validReg(param1) &&  (!validNumber(param1))))
 				   { return false; }
 
-		else if ((!validLabelForAdrresing2(param2 = strtok(NULL, PARAN_CLOSE))) &&
-				 (!validReg(param2) &&
-				 (!validNumber(param2)))){ return false; }
+		else if ((!validLabelForAdrresing2(param2 = strtok(NULL, CLOSE_PARENTHESIS))) &&
+				 (!validReg(param2) &&	 (!validNumber(param2)))){ return false; }
 		else {
 
 			if (!(copyStr(&(line->args[0]), label1))) {
@@ -70,7 +68,6 @@ input_line * getLine(FILE *input) {
 
 	char cmdStr[LINE_MAX_LEN];
 	char tmpStr[LINE_MAX_LEN];
-	/* TODO : is needed???:  "char *p1, *p2;" */
 	input_line *line;
 	int length; /* Temporary length */
 	int i, status;
@@ -91,7 +88,7 @@ input_line * getLine(FILE *input) {
 
 	if (!fgets(cmdStr, LINE_MAX_LEN, input)) { /* EOF encountered */
 		line->isEOF = true;
-		/* free(line->args) */  /* FIXME is this line is needed ???? rea add */
+		free(line->args);  /* FIXME is this line is needed ???? rea add */
 		return line;
 	}
 
@@ -133,7 +130,7 @@ input_line * getLine(FILE *input) {
 		line->label = NULL;
 	}
 	/* End operator section */
-    i=3;
+    i = THREE_OPERANDS;
 	if (!(handleForAddressing2(cmdStr + strIndex, line))){
 		/* Separates arguments */
 		/* get the first argument */

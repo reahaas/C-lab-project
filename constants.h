@@ -28,6 +28,8 @@
 #define OBJ_EXT ".ob"
 #define EXT_EXT ".ext"
 #define ENT_EXT ".ent"
+#define NO_ARGS 0
+#define THREE_OPERANDS 3
 
 /*
  *	The three types of encode:
@@ -38,16 +40,12 @@ enum ENCODE {
 };
 /*
  * The four types of addressing:
- * immediate, direct, random and direct-register.
+ * immediate, direct, jump-with-params and direct-register.
  */
-/* TODO fix the third addressing method rnd -> jump */
 typedef enum ADDRESSING {
 	IMD = 0, DIR, JWP, REG
 } addressing;
-/* Arguments amount enums */
-enum NUM_OF_ARGS {
-	NO_ARGS = 0, ONE_ARG, TWO_ARGS
-};
+
 
 /* Registers enum table */
 typedef enum {
@@ -85,13 +83,10 @@ typedef enum {
 #define STR_DELIM '"'
 #define REG_FLAG 'r'
 #define IMD_FLAG '#'
-#define RND_FLAG '*'
 #define ARG_SEPERATOR ','
+#define SPACE ' '
 #define OPEN_PARENTHESIS "("
 #define CLOSE_PARENTHESIS ")"
-#define SPACE ' '
-#define PARAN_OPEN "("
-#define PARAN_CLOSE ")"
 /* Flag status */
 typedef enum {
 	ASM_SUCCESS, ASM_FAILURE

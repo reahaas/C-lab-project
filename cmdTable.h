@@ -30,7 +30,7 @@ int getCmdLength(void);
 void increaseCmdLength(int n);
 /* reset data table */
 void resetCmdTable(void);
-/* print cmd table */
+/* print cmd table, use to check */
 void printCmdTable(void);
 
 #endif
