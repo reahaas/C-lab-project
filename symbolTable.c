@@ -5,6 +5,7 @@
 #include "assembler.h"
 #include "symbolTable.h"
 #include "symbolStructs.h"
+/* #include "constants.h" */
 #include "converter.h"
 
 static label *createLabel(char *labelName, int address, bool isExtertan,
@@ -143,33 +144,7 @@ void relocate(int paddin) {
 	}
 }/* End relocate */
 
-/* Gets a random address of a non external symbol */
-int getRandomAddress(void) {
-	labelNode *node = symbol_list.head;
-	int i = 0;
 
-	if (node) {
-		do {/* Counts the non external labels */
-			if (!node->this->isExt)
-				i++;
-		} while ((node = node->next));
-		if (!i)
-			return -1;
-		i = rand() % i;
-		node = symbol_list.head;
-
-		while (i-- || node->this->isExt) {/* Skip to the random label */
-			if (node->this->isExt)
-				i++;
-			node = node->next;
-		}
-		return node->this->address;
-	}
-
-	return -1;
-}/* End getRandomAddress */
-
-/*TODO check if needed*/
 /* Searches the symbol table for the name given */
 bool findLabel(const char *name) {
 	return getLabel(name) ? true : false;
@@ -179,7 +154,7 @@ bool findLabel(const char *name) {
 label *getLabel(const char *name) {
 	labelNode *node = symbol_list.head;
 	do {
-		if (strcmp(node->this->labelName, name) == 0)
+		if (strcmp(node->this->labelName, name) == 0) /*runs throw the list and finding label*/
 			return node->this;
 	} while ((node = node->next) != NULL);
 	return NULL;
@@ -199,7 +174,6 @@ void freeSymbolTable(void) {
 	}
 }/* End freeSymbolTable */
 
-/*TODO check it */
 void printSymbolTable(void) {/* Debug only. */
 	labelNode *node = symbol_list.head;
 	printf("%s\t\t%s\t\t%s\t%s\n", "Label", "Address", "isExtern", "isOp");

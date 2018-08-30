@@ -45,8 +45,8 @@ int addArg(word arg) {
 		else {
 			/* skip to the end of the list */
 			for (current = cmd_list.head; current->next != NULL; current =
-					current->next)
-				;
+					current->next);
+
 			current->next = newNode;
 		}
 		cmd_list.length++;
@@ -57,8 +57,8 @@ int addArg(word arg) {
 
 /* Adds command to cmd_list */
 int addCmd(unsigned int decode, unsigned int destOperand,
-		unsigned int srcOperand, unsigned int opcode, unsigned int group,
-		unsigned int rnd) {
+		unsigned int srcOperand, unsigned int opcode, unsigned int paramOneType,
+		unsigned int paramTwoType) {
 	cmdNode *current, *newNode;
 	word newWord;
 
@@ -66,12 +66,12 @@ int addCmd(unsigned int decode, unsigned int destOperand,
 	newWord.cmd.destOperand = destOperand;
 	newWord.cmd.srcOperand = srcOperand;
 	newWord.cmd.opcode = opcode;
-	newWord.cmd.paramOne = group;
-	newWord.cmd.paramTwo = rnd;
+	newWord.cmd.paramOne = paramOneType;
+	newWord.cmd.paramTwo = paramTwoType;
 	if ((newNode = createCmdNode(newWord))
 			&& cmd_list.length + data_list.length < MAX_MEMORY_SIZE) {
 
-		if (cmd_list.head == NULL) {
+		if (cmd_list.head == NULL) {/*put it in head*/
 			cmd_list.head = createCmdNode(newWord);
 		} else {
 			/* skip to the end of the list */

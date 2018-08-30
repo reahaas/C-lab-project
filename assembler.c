@@ -23,24 +23,42 @@ const char *ops[] = { "mov", "cmp", "add", "sub", "not", "clr", "lea",
                       "inc", "dec", "jmp", "bne", "red", "prn", "jsr", "rts", "stop", /* Ops until here */
                       ".data", ".string", ".entry", ".extern" }; /* Instructions *//* The order of these command stay identical to the order of the enum constants in constants.h so the index will match the enum value */
 
- static bool handleForAddressing2(char *src, input_line *line){
-    static char *label1,*param1,*param2;
+ static bool handleForAddressing2(char *src, input_line *line){ /* TODO validation if u have space or should be false*/
+    static char *label1,*param1,*param2,*isContainParanatist = NULL;
+    char* args0,*args1,*args2;
+	  isContainParanatist = strchr(src, '(');
+		if(isContainParanatist != NULL){
+			if (!validLabel(label1 = strtok(src, OPEN_PARENTHESIS))){
+				return false;
+		} else if ((!validLabelForAdrresing2(param1 = strtok(NULL, ","))) &&
+				   (!validReg(param1) &&  (!validNumber(param1))))
+				   { return false; }
 
-	if (!validLabel(label1 =  strtok(src ,PARAN_OPEN))){
-	return false;
+		else if ((!validLabelForAdrresing2(param2 = strtok(NULL, CLOSE_PARENTHESIS))) &&
+				 (!validReg(param2) &&	 (!validNumber(param2)))){ return false; }
+		else {
+
+			if (!(copyStr(&(line->args[0]), label1))) {
+				freeLine(line);
+				return false;
+			}
+			if (!(copyStr(&(line->args[1]), param1))) {
+				freeLine(line);
+				return false;
+			}
+			if (!(copyStr(&(line->args[2]), param2))) {
+				freeLine(line);
+				return false;
+			}
+
+			args0 = line-> args[0];
+			args1 = line -> args[1];
+			args2 = line -> args[2];
+			return true;
+		}
 	}
-	else if ((!validLabelForAdrresing2(param1 = strtok(NULL,","))) &&
-	(!validReg(param1 = strtok(NULL,","))) && (!validNumber(param1 = strtok(NULL,","))))
-	{ return false;}
-
-	else if ((!validLabelForAdrresing2(param2 = strtok(NULL, PARAN_CLOSE))) &&
-		(!validReg(param2 = strtok(NULL, PARAN_CLOSE))) && (!validNumber(param2 = strtok(NULL,PARAN_CLOSE))))
-	{ return false;}
 	else{
-		line->args[0] = label1;
-		line->args[1] = param1;
-		line->args[2] = param2;
-		return true;
+		return false;
 	}
 }
 
@@ -50,7 +68,6 @@ input_line * getLine(FILE *input) {
 
 	char cmdStr[LINE_MAX_LEN];
 	char tmpStr[LINE_MAX_LEN];
-	/* TODO : is needed???:  "char *p1, *p2;" */
 	input_line *line;
 	int length; /* Temporary length */
 	int i, status;
@@ -64,14 +81,14 @@ input_line * getLine(FILE *input) {
 	line->label = NULL;
 	line->isEffectless = false;
 	line->isEOF = false;
-	line->args = malloc(sizeof(char *) * MAX_ARG_COUNT);
+	line->args = malloc(sizeof(char *) * MAX_ARG_COUNT);/*max arg = 40*/
 
 	for (i = 0; i < MAX_ARG_COUNT; i++) /* Set all cells to NULL */
 		line->args[i] = NULL;
 
 	if (!fgets(cmdStr, LINE_MAX_LEN, input)) { /* EOF encountered */
 		line->isEOF = true;
-		/* free(line->args) */  /* FIXME is this line is needed ???? rea add */
+		free(line->args);  /* FIXME is this line is needed ???? rea add */
 		return line;
 	}
 
@@ -113,11 +130,11 @@ input_line * getLine(FILE *input) {
 		line->label = NULL;
 	}
 	/* End operator section */
-
+    i = THREE_OPERANDS;
 	if (!(handleForAddressing2(cmdStr + strIndex, line))){
 		/* Separates arguments */
 		/* get the first argument */
-		i = 0;
+		i=0;
 		if (!(status = getNextArg(cmdStr + strIndex,
 								  tmpStr))) { /*tmpstr will be destination of the wanted arg, this is boolian so return 1 if successful*/
 			free(line->args);
@@ -145,12 +162,13 @@ input_line * getLine(FILE *input) {
 			}
 		} /* End of get all the other arguments */
 		//}
-		if ((length = i) > 0) /*length is number of arguments in*/
-			line->args = realloc(line->args, sizeof(char *) * length +
-											 1); /* Can't fail because it's shrinking, the initial size of args is bigger or equal to the actual size of args */
+    }
+
+    if ((length = i) > 0) /*length is number of arguments in*/
+			line->args = realloc(line->args, sizeof(char *) * (length +
+											 1)); /* Can't fail because it's shrinking, the initial size of args is bigger or equal to the actual size of args */
 
 		/* End arguments section */
-	}
 	strIndex = 0;
 	return line;
 }/* End getLine */
@@ -363,7 +381,7 @@ bool validNumber(char *str){
 bool validLabelForAdrresing2(char* labelStr){ /*WITHOUT VALID REG*/
 	int i;
 
-	if (getOpForValidLabel(ops,labelStr,(sizeof(ops) / sizeof(ops[0]))) != -1){
+	if (getOpForValidLabel(ops,labelStr,(sizeof(ops) / sizeof(ops[0]))) != -1){ /*if it a operand so error out*/
 		error(sprintf(errMsg, ILLEGAL_LABEL, labelStr));
 		return false;
 	}

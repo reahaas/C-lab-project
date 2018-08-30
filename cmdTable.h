@@ -21,7 +21,7 @@ extern cmdList cmd_list;
  Adds command to cmd_list
  */
 int addCmd(unsigned int decode, unsigned int destOperand, unsigned int srcOperand,
-            unsigned int opcode, unsigned int group, unsigned int rnd);
+            unsigned int opcode, unsigned int paramOneType, unsigned int paramTwoType);
 /* Adds argument word to cmd_list */
 int addArg(word arg);
 /* return the length of cmd_list */
@@ -30,7 +30,7 @@ int getCmdLength(void);
 void increaseCmdLength(int n);
 /* reset data table */
 void resetCmdTable(void);
-/* print cmd table */
+/* print cmd table, use to check */
 void printCmdTable(void);
 
 #endif

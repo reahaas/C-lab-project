@@ -4,12 +4,12 @@ add r1,r2
 add r1, r2
 add r1 ,r2
 bne LOOP(K,W)
-MAIN: mov ***, LENGTH
+MAIN: mov r1, LENGTH
 add r2,STR
 LOOP: jmp END
 prn #-5
 sub r1 , r4
-mov **,r3
+mov r2,r3
 bne LOOP
 END: stop
 STR: .string "abcdef"

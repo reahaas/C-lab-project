@@ -1,15 +1,30 @@
-/*is ready to run*/
+/* new list */
+constance.h
+main.c
+secondRun.c
+
 converter.c
-converter.c
+converter.h
+errorhandler.c
+errorhandler.h
+cmdTable.c
+cmdTable.h
 dataTable.c
 dataTable.h
-errorhandler.c
+structs.h
+symbolStructs.h
 symbolTable.c
-symbolTable.h
-main.c
 
 
 /*need to be changed*/
 firstRun.c -> handleline()
-constance.h -> change the macros
-errorhandler.h -> changes the macros
+symbolTable.h
+
+
+/* not looked yet */
+saveFiles.c
+saveFiles.h
+assembler.c
+assembler.h
+README.md
+test*.as
