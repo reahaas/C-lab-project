@@ -57,7 +57,6 @@ FLAG assembler(FILE *src) {
 	if (flag == ASM_SUCCESS) {
 		printf("\nsecond run succeded, start save files\n\n");
 		printf("the data table is:\n\n\n");
-		printDataTable(cmd_list.length - data_list.length); /* TODO debugger, remove this print */
 		saveFiles();
 		printf("\nsave files function finished\n\n");
 	} else {

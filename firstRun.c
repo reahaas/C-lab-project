@@ -224,7 +224,6 @@ static bool handleLine(input_line* line) {
         return false;
         break;
 	}
-    printf("\n%s %d, %s %d\n", "command list length is: " , cmd_list.length, " data list length is: " , data_list.length);  /* TODO debugger, remove this print */
 
     return true;
 }/* End handleLine */
