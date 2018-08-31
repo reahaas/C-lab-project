@@ -11,19 +11,19 @@ static bool get_next_argument(char *src, char *dest);
 static int get_operator(const char **ops, const char *str, int opsAmount);
 static int get_operator_valid(const char **ops, const char *str, const int opsAmount);
 void trimmer(char * cmdStr, input_line * line);
-bool rec_label(char *tmpStr, input_line *line);  /*TODO change name*/
+bool rec_label(char *tmpStr, input_line *line);
 
 const char *ops[] = { "mov", "cmp", "add", "sub", "not", "clr", "lea",
                       "inc", "dec", "jmp", "bne", "red", "prn", "jsr", "rts", "stop", /* Ops until here */
                       ".data", ".string", ".entry", ".extern" }; /* Instructions *//* The order of these command stay identical to the order of the enum constants in constants.h so the index will match the enum value */
 
- static bool handleForAddressing2(char *src, input_line *line) {
-	 static char *label1, *first_parameter, *second_parameter, *check = NULL, *has_spaces = NULL;
+ static bool check_and_fix_second_addr(char *src, input_line *line) {
+	 static char *symbol, *first_parameter, *second_parameter, *check = NULL, *has_spaces = NULL;
 	 check = strchr(src, '(');
 	 has_spaces = strchr(src, SPACE);
 	 if (check != NULL){
 		if (has_spaces == NULL){
-		 if (!valid_label(label1 = strtok(src, OPEN_PARENTHESES))){
+		 if (!valid_label(symbol = strtok(src, OPEN_PARENTHESES))){
 			 return false;
 		 } else if ((!valid_label_for_second_adrresing(first_parameter = strtok(NULL, ","))) &&
 					(!valid_register(first_parameter) && (!valid_number(first_parameter)))){
@@ -35,7 +35,7 @@ const char *ops[] = { "mov", "cmp", "add", "sub", "not", "clr", "lea",
 		 	return false;
 		 }
 		 else {
-			 if (!(copy_string(&(line->args[0]), label1))){                     /*TODO change label1*/
+			 if (!(copy_string(&(line->args[0]), symbol))){
 				 freeLine(line);
 				 return false;
 			 }
@@ -77,33 +77,33 @@ input_line * getLine(FILE *input){
 	line->label = NULL;
 	line->unnecessary = false;
 	line->is_end_of_file = false;
-	line->args = malloc(sizeof(char *) * MAX_ARG_COUNT);/*max arg = 40*/
+	line->args = malloc(sizeof(char *) * MAX_ARG_COUNT);
 
-	for (i = 0; i < MAX_ARG_COUNT; i++) /* Set all cells to NULL */
+	for (i = 0; i < MAX_ARG_COUNT; i++)
 		line->args[i] = NULL;
 
-	if (!fgets(cmd_string, MAXIMUM_LINE_LENGTH, input)) { /* EOF encountered */
+	if (!fgets(cmd_string, MAXIMUM_LINE_LENGTH, input)){
 		line->is_end_of_file = true;
-		free(line->args);  /* FIXME is this line is needed ???? rea add */
+		free(line->args);
 		return line;
 	}
 
-	if ((length = strlen(cmd_string)) == 0 || sscanf(cmd_string, "%s", tmp_string) == 0 || tmp_string[0] == COMMENT_SIGN) { /* Check for effect-less line */
+	if ((length = strlen(cmd_string)) == 0 || sscanf(cmd_string, "%s", tmp_string) == 0 || tmp_string[0] == COMMENT_SIGN){
 		line->unnecessary = true;
 		free(line->args);
 		line->args = NULL;
 		return line;
-	} else if (cmd_string[length - 1] != NEWLINE) { /* Line exceeds max length */
+	} else if (cmd_string[length - 1] != NEWLINE){
 		error(sprintf(error_message, LINE_EXCEEDS_LENGTH));
 		freeLine(line);
 		return NULL;
 	}
 
-	trimmer(cmd_string, line); /* put in cmd_string the canonical form of itself */
-	if (line->unnecessary) /* FIXME is needed ??? */
+	trimmer(cmd_string, line);
+	if (line->unnecessary)
 		return line;
 
-	sscanf(cmd_string, "%s", tmp_string);  /* copy the first string, which can be label, or command, tmp_string will be comment or label */
+	sscanf(cmd_string, "%s", tmp_string);
 
 	if (!rec_label(tmp_string, line))   /* Recognise label section */
 		return NULL; /* error handle is in the function */
@@ -127,7 +127,7 @@ input_line * getLine(FILE *input){
 	}
 	/* End operator section */
     i = THREE_OPERANDS;
-	if (!(handleForAddressing2(cmd_string + string_index, line))){
+	if (!(check_and_fix_second_addr(cmd_string + string_index, line))){
 		/* Separates arguments */
 		/* get the first argument */
 		i=0;
