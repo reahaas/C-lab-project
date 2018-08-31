@@ -210,8 +210,20 @@ static bool handleLine2(input_line* line) {
 				multiReg.reg.decode = ABS;
 				addArg(multiReg);
 			} else {
+				if ( argOne.num.value == 0 ) { /* argOne is a label, so i want to check If the arg is external */
+					if (!addExt(line->args[1], getCmdLength() + 1 )) {
+						return false;
+					}
+				}
 				addArg(argOne);
+
+				if ( argTwo.num.value == 0 ) { /* argTwo is a label, so i want to check If the arg is external */
+					if (!addExt(line->args[2], getCmdLength() + 1 )) {
+						return false;
+					}
+				}
 				addArg(argTwo);
+
 			}
 
 		} else {

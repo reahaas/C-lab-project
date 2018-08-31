@@ -60,10 +60,14 @@ static bool saveObj(FILE *file, int *i) {
 	}
 	fprintf(file, "%s\t%s\n", valueToBase10DecimalString(cmdAmount),
 			valueToBase10DecimalString(data_list.length));
+	printf("%s\t%s\n", valueToBase10DecimalString(cmdAmount),
+			valueToBase10DecimalString(data_list.length));
 	for (cmd_node = cmd_list.head; cmd_node != NULL;
 			cmd_node = cmd_node->next, (*i)++) {
 		fprintf(file, "%s\t%s\n", valueToBase10DecimalString(*i),
 				base10to2Wierd(cmd_node->value.print));
+		printf("%s\t%s\n", valueToBase10DecimalString(*i), base10to2Wierd(cmd_node->value.print));
+
 	}
 	if (saveData(file, i))
 		return true;
@@ -83,6 +87,8 @@ bool saveData(FILE *file, int *i) {
 			data_node = data_node->next, (*i)++) {
 		fprintf(file, "%s\t%s\n", valueToBase10DecimalString(*i),
 				base10to2Wierd(data_node->value));
+		printf("%s\t%s\n", valueToBase10DecimalString(*i),
+				base10to2Wierd(data_node->value));
 	}
 	if (start == *i)
 		return false;
@@ -98,6 +104,7 @@ bool saveExt(FILE *file, int *i) {
 
 	while ((name = popExt(&num))) {
 		fprintf(file, "%s\t%s\n", name, valueToBase10DecimalString(num));
+		printf("%s\t%s\n", name, valueToBase10DecimalString(num));
 		free(name);
 		hasContent = true;
 	}
@@ -112,6 +119,7 @@ bool saveEnt(FILE *file, int *i) {
 
 	while ((name = popEnt(&num))) {
 		fprintf(file, "%s\t%s\n", name, valueToBase10DecimalString(num));
+		printf("%s\t%s\n", name, valueToBase10DecimalString(num));
 		hasContent = true;
 	}
 	return hasContent;
