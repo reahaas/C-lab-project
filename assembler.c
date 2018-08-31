@@ -1,4 +1,5 @@
-/* assembler.c
+/*
+ * assembler.c
  */
 
 #include "assembler.h"

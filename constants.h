@@ -1,7 +1,6 @@
 /*
  * constants.h
  *
- *  Created on: Jan 18, 2016
  */
 
 #ifndef CONSTANTS_H
