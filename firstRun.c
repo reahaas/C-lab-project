@@ -99,6 +99,7 @@ static bool handleLine(input_line* line) {
     case JMP:
     case JSR:
     case BNE:
+        isOp = true;
         /*dont forget the may can be that has */
         if (line->args != NULL ) { /* jump first argument is a label */
             wordCounter++;

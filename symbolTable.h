@@ -5,6 +5,7 @@
 #ifndef SYMBOL_H
 #define SYMBOL_H
 
+
 typedef struct {
 	char *labelName;
 	int address;

@@ -137,7 +137,7 @@ void relocate(int paddin) {
 	labelNode *node = symbol_list.head;
 	if (node) {
 		do {
-			if (!node->this->isOp && !node->this->isExt) {
+			if ((!node->this->isOp) && (!node->this->isExt)){
 				node->this->address += paddin;
 			}
 		} while ((node = node->next));

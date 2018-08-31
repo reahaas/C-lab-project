@@ -16,7 +16,7 @@ FLAG secondRun(FILE *src) {
 	input_line *line;
 	int lineIndex;
 	fseek(src, 0L, SEEK_SET);
-	relocate(cmd_list.length); /*TODO what does this shit do?*/
+	relocate(cmd_list.length); /*sorting out the addressing with padding*/
 	for (lineIndex = 1; true; lineIndex++) { /* Runs through all the lines. */
 		if ((line = getLine(src))) {
 			if (line->isEOF) {

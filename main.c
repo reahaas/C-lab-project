@@ -45,11 +45,11 @@ int main(int argc, char* argv[]) {
 /* Main assembler function. */
 FLAG assembler(FILE *src) {
 	flag = ASM_SUCCESS;
-
 	printf("\nstart the first run\n\n");
 	firstRun(src); /* if an error occurs during the first run, flag turn to ASM_FAILURE */
 	if (flag == ASM_SUCCESS) {
 		printf("\nfirst run succede, start secont run\n\n");
+
 		secondRun(src); /* if an error occur during the second run, flag turn to ASM_FAILURE */
 	} else {
 		printf("\nfirst run failure\n\n");
