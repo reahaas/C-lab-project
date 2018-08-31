@@ -1,7 +1,7 @@
 /* new list */
 constance.h
 main.c
-secondRun.c
+secondCycle.c
 
 converter.c
 converter.h

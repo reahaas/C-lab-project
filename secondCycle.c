@@ -1,6 +1,3 @@
-/*
- * secondRun.c
- */
 #include <string.h>
 #include "assembler.h"
 #include "dataTable.h"
@@ -12,7 +9,7 @@
 static bool handleLine2(input_line*);
 static addressing getArgWord(const char *str, word *wrd);
 
-FLAG secondRun(FILE *src) {
+FLAG secondCycle(FILE *src) {
 	input_line *line;
 	int lineIndex;
 	fseek(src, 0L, SEEK_SET);
@@ -40,7 +37,7 @@ FLAG secondRun(FILE *src) {
 		freeLine(line);
 	}
 	return flag;
-}/* End secondRun */
+}/* End secondCycle */
 
 /* Analyses an line of code and operates accordingly */
 static bool handleLine2(input_line* line) {
@@ -278,7 +275,7 @@ static addressing getArgWord(const char *str, word *wrd) { /*wrd is srcArg or de
 	label *lbl;
 
 	if (str[0] == IMD_FLAG) {/* Is immediate number */
-		if (!strToInt(str + 1, &num)) {
+		if (!string_to_int(str + 1, &num)) {
 			error(sprintf(error_message, SYNTAX_ERROR UNKNOWN_ARGUMENT_TYPE));
 			return -1;
 		}

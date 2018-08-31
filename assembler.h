@@ -21,9 +21,9 @@ void freeLine(input_line *line);
 bool valid_label(const char *);
 bool valid_register(const char *registerStr);
 bool copy_string(char **dest, const char *src);
-bool strToInt(const char *str, int *dest);
+bool string_to_int(const char *str, int *dest);
 static bool check_and_fix_second_addr(char *src, input_line *line);
-bool valid_label_for_second_adrresing(char *labelStr);
+bool valid_label_for_second_addressing(char *labelStr);
 bool valid_number(char *str);
 
 /* First run functions */
@@ -31,6 +31,6 @@ FLAG firstCycle(FILE *sourceFile);
 void relocate(int paddin);
 
 /* Second run functions */
-FLAG secondRun(FILE *);
+FLAG secondCycle(FILE *);
 
 #endif

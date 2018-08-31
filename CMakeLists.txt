@@ -22,7 +22,7 @@ add_executable(C_lab_project
         README.md
         saveFiles.c
         saveFiles.h
-        secondRun.c
+        secondCycle.c
         structs.h
         symbolStructs.h
         symbolTable.c

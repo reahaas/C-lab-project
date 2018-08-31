@@ -37,25 +37,22 @@ int main(int argc, char* argv[]) {
 	}
 }
 
-
-/* Assembler's functions from main*/
-FLAG assembler(FILE *src) {
+FLAG assembler(FILE *src){
 	flag = ASSEMBLER_SUCCESS;
-	printf("\nBegin of the first run\n\n");
+	printf("\nBegin of the first cycle\n\n");
 	firstCycle(src);
-	if (flag == ASSEMBLER_SUCCESS) {
-		printf("\nFirst run succeeded, start of the second run\n\n");
-
-		secondRun(src);
-	} else {
-		printf("\nFirst run failed\n\n");
+	if (flag == ASSEMBLER_SUCCESS){
+		printf("\nFirst cycle succeeded, start of the second cycle\n\n");
+		secondCycle(src);
+	} else{
+		printf("\nFirst cycle failed\n\n");
 	}
-	if (flag == ASSEMBLER_SUCCESS) {
-		printf("\nsecond run succeeded, save files\n\n");
+	if (flag == ASSEMBLER_SUCCESS){
+		printf("\nSecond cycle succeeded, save files\n\n");
 		printf("Data table is:\n\n\n");
 		saveFiles();
 		printf("\nSave files function finished\n\n");
 	} else {
-		printf("\nSecond run failed\n\n");
+		printf("\nSecond cycle failed\n\n");
 	}
 }
