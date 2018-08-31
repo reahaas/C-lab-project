@@ -50,6 +50,7 @@ static bool handleLine(input_line* line) {
 	int isExt = false;
 	int hasLabel = (line->label ? true : false);
 	int wordCounter = 0; /* counts the amount of words need to be in the memory */
+
 	switch (line->cmd) {
     /* Two operands group */
     case MOV:
@@ -223,5 +224,7 @@ static bool handleLine(input_line* line) {
         return false;
         break;
 	}
-	return true;
+    printf("\n%s %d, %s %d\n", "command list length is: " , cmd_list.length, " data list length is: " , data_list.length);  /* TODO debugger, remove this print */
+
+    return true;
 }/* End handleLine */

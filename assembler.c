@@ -71,7 +71,6 @@ input_line * getLine(FILE *input) {
 	input_line *line;
 	int length; /* Temporary length */
 	int i, status;
-
 	if (!(line = malloc(sizeof(input_line)))) { /* Mem initialisation */
 		error(sprintf(errMsg, OUT_OF_RAM));
 		freeLine(line);

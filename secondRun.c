@@ -45,6 +45,8 @@ FLAG secondRun(FILE *src) {
 /* Analyses an line of code and operates accordingly */
 static bool handleLine2(input_line* line) {
 	char* argslabel,*args2,*args3;
+
+
 	switch (line->cmd) {
 	/* Two operands group */
 	case MOV:
@@ -266,7 +268,9 @@ static bool handleLine2(input_line* line) {
 		return false;
 		break;
 	}
-	return true;
+    printf("\n%s %d, %s %d\n", "command list length is: " , cmd_list.length, " data list length is: " , data_list.length);  /* TODO debugger, remove this print */
+
+    return true;
 }/* End handleLine2 */
 
 

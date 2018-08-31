@@ -67,6 +67,7 @@ static bool saveObj(FILE *file, int *i) {
 		fprintf(file, "%s\t%s\n", valueToBase10DecimalString(*i),
 				base10to2Wierd(cmd_node->value.print));
 		printf("%s\t%s\n", valueToBase10DecimalString(*i), base10to2Wierd(cmd_node->value.print));
+		printf("\n%s %d, %s %d\n", "command list length is: " , cmd_list.length, " data list length is: " , data_list.length);  /* TODO debugger, remove this print */
 
 	}
 	if (saveData(file, i))
