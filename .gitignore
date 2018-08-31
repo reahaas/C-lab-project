@@ -4,3 +4,5 @@ cmake-build-debug/
 *.ob
 C_lab_project.exe
 *.stackdump
+*.ext
+*.ent
