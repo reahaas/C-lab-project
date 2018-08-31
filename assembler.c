@@ -58,10 +58,12 @@ const char *ops[] = { "mov", "cmp", "add", "sub", "not", "clr", "lea",
 			 return true;
 		 }
 	 }
+		 error(sprintf(errMsg, SYNTAX_ERROR UNKNOWN_ARG_TYPE));
+		 return false;
  }
 	else{
 
-			error(sprintf(errMsg, SYNTAX_ERROR UNKNOWN_ARG_TYPE));
+
 			return false;
 	}
 }
