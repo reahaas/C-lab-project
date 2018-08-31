@@ -17,6 +17,9 @@ char * base10to2Wierd(long unsigned int value) {
 		numInBaseWeird2[i] = '.';
 	}
 	numInBaseWeird2[WORD_SIZE-1] = '\n'; /* the end of the string */
+	if(value == 0){
+		numInBaseWeird2[WORD_SIZE-1] = base2[0];
+	}
 	while(value!=0)
 	{
 		numInBaseWeird2[i] = base2[value%2];
