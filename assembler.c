@@ -233,14 +233,16 @@ bool RecogniseLabelSection(char  * tmpStr, input_line *line) {
 /* Release all allocated mem from struct */
 void freeLine(input_line *line) {
 	int i;
-	if (!line)
+	if (line -> isEOF)
 		return;
 	free(line->label);
 	if (line->args != NULL)/* Release args */
 		for (i = 0; line->args[i] != NULL; i++)
 			free(line->args[i]);
 	free(line->args);
-	free(line);
+	if(line){
+		free(line);
+	}
 }/* End freeLine */
 
 

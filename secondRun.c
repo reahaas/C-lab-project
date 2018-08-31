@@ -218,7 +218,7 @@ static bool handleLine2(input_line* line) {
 			error(sprintf(errMsg, WRONG_ARG_COUNT));
 			return false;
 		}/*end of JWP (one or three operands) group*/
-
+			break;
 	/* No operands group */
 	case RTS:
 	case STOP:

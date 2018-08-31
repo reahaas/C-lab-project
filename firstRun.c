@@ -23,7 +23,7 @@ FLAG firstRun(FILE *src) {
 		if ((line = getLine(src))) /* line is an object that contains all the data from one "string" line in the file. */
 		{
 			if (line->isEOF) {
-				freeLine(line);
+                return false;
 				break; /* End when EOF is encountered */
 			}
 			if (line->isEffectless) {
