@@ -26,6 +26,4 @@ add_executable(C_lab_project
         structs.h
         symbolStructs.h
         symbolTable.c
-        symbolTable.h
-
-        yakir's-says)
+        symbolTable.h)

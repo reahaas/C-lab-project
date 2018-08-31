@@ -23,42 +23,46 @@ const char *ops[] = { "mov", "cmp", "add", "sub", "not", "clr", "lea",
                       "inc", "dec", "jmp", "bne", "red", "prn", "jsr", "rts", "stop", /* Ops until here */
                       ".data", ".string", ".entry", ".extern" }; /* Instructions *//* The order of these command stay identical to the order of the enum constants in constants.h so the index will match the enum value */
 
- static bool handleForAddressing2(char *src, input_line *line){ /* TODO validation if u have space or should be false*/
-    static char *label1,*param1,*param2,*isContainParanatist = NULL;
-    char* args0,*args1,*args2;
-	  isContainParanatist = strchr(src, '(');
-		if(isContainParanatist != NULL){
-			if (!validLabel(label1 = strtok(src, OPEN_PARENTHESIS))){
-				return false;
-		} else if ((!validLabelForAdrresing2(param1 = strtok(NULL, ","))) &&
-				   (!validReg(param1) &&  (!validNumber(param1))))
-				   { return false; }
+ static bool handleForAddressing2(char *src, input_line *line) { /* TODO validation if u have space or should be false*/
+	 static char *label1, *param1, *param2, *isContainParanatist = NULL, *hasspaces = NULL;
+	 char *args0, *args1, *args2; /*degug*/
+	 isContainParanatist = strchr(src, '(');
+	 hasspaces = strchr(src, SPACE);
+	 if (isContainParanatist != NULL){
+		if (hasspaces == NULL){
+		 if (!validLabel(label1 = strtok(src, OPEN_PARENTHESIS))) {
+			 return false;
+		 } else if ((!validLabelForAdrresing2(param1 = strtok(NULL, ","))) &&
+					(!validReg(param1) && (!validNumber(param1)))) { return false; }
 
-		else if ((!validLabelForAdrresing2(param2 = strtok(NULL, CLOSE_PARENTHESIS))) &&
-				 (!validReg(param2) &&	 (!validNumber(param2)))){ return false; }
-		else {
+		 else if ((!validLabelForAdrresing2(param2 = strtok(NULL, CLOSE_PARENTHESIS))) &&
+				  (!validReg(param2) && (!validNumber(param2)))) { return false; }
+		 else {
 
-			if (!(copyStr(&(line->args[0]), label1))) {
-				freeLine(line);
-				return false;
-			}
-			if (!(copyStr(&(line->args[1]), param1))) {
-				freeLine(line);
-				return false;
-			}
-			if (!(copyStr(&(line->args[2]), param2))) {
-				freeLine(line);
-				return false;
-			}
+			 if (!(copyStr(&(line->args[0]), label1))) {
+				 freeLine(line);
+				 return false;
+			 }
+			 if (!(copyStr(&(line->args[1]), param1))) {
+				 freeLine(line);
+				 return false;
+			 }
+			 if (!(copyStr(&(line->args[2]), param2))) {
+				 freeLine(line);
+				 return false;
+			 }
 
-			args0 = line-> args[0];
-			args1 = line -> args[1];
-			args2 = line -> args[2];
-			return true;
-		}
-	}
+			 args0 = line->args[0];
+			 args1 = line->args[1];
+			 args2 = line->args[2];
+			 return true;
+		 }
+	 }
+ }
 	else{
-		return false;
+
+			error(sprintf(errMsg, SYNTAX_ERROR UNKNOWN_ARG_TYPE));
+			return false;
 	}
 }
 
@@ -164,8 +168,7 @@ input_line * getLine(FILE *input) {
     }
 
     if ((length = i) > 0) /*length is number of arguments in*/
-			line->args = realloc(line->args, sizeof(char *) * (length +
-											 1)); /* Can't fail because it's shrinking, the initial size of args is bigger or equal to the actual size of args */
+			line->args = realloc(line->args, sizeof(char *) * (length + 1)); /* Can't fail because it's shrinking, the initial size of args is bigger or equal to the actual size of args */
 
 		/* End arguments section */
 	strIndex = 0;
