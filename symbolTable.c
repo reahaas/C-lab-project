@@ -30,12 +30,12 @@ bool addLabel(char *labelName, int address, bool isExt, bool isOp) {
 
 	/* Some error checking */
 	if (labelName == NULL){
-		error(sprintf(errMsg, LABEL_NAME_ERR));
+		error(sprintf(error_message, LABEL_NAME_MISSING));
 		return false;
 	}
 	while (current) {/* Makes sure the label doesn't exist already */
 		if (strcmp(current->this->labelName, labelName) == 0) { /* True the label exists */
-			error(sprintf(errMsg, MULTI_LABEL_DEF, labelName));
+			error(sprintf(error_message, MULTIPLE_LABEL_DEFINITIONS, labelName));
 			return false;
 		} else if (current->next) {/*check the next one */
 			current = current->next;/*assign current to be the next current*/
@@ -61,21 +61,21 @@ bool addExt(char *symbol, int address) {
 	externNode *node = ext_list.head;
 
 	if (!node && !(node = malloc(sizeof(node)))) {
-		error(sprintf(errMsg, OUT_OF_RAM));
+		error(sprintf(error_message, OUT_OF_MEMORY));
 		return false;
 	}
 	if (ext_list.head != NULL) {
 		while (node->next)/* Skip to the end */
 			node = node->next;
 		if (!(node->next = malloc(sizeof(node)))) {
-			error(sprintf(errMsg, OUT_OF_RAM));
+			error(sprintf(error_message, OUT_OF_MEMORY));
 			return false;
 		}
 		node = node->next;
 	} else {
 		ext_list.head = node;
 	}
-	copyStr(&node->this.labelName, symbol);
+	copy_string(&node->this.labelName, symbol);
 	node->this.address = address + MEMORY_START;
 	node->next = NULL;
 	return true;
@@ -86,14 +86,14 @@ bool addEnt(label *lbl) {
 	entryNode *node = ent_list.head;
 
 	if (!node && !(node = malloc(sizeof(node)))) {
-		error(sprintf(errMsg, OUT_OF_RAM));
+		error(sprintf(error_message, OUT_OF_MEMORY));
 		return false;
 	}
 	if (ent_list.head != NULL) {
 		while (node->next)/* Skip to the end */
 			node = node->next;
 		if (!(node->next = malloc(sizeof(node)))) {
-			error(sprintf(errMsg, OUT_OF_RAM));
+			error(sprintf(error_message, OUT_OF_MEMORY));
 			return false;
 		}
 		node = node->next;
@@ -196,13 +196,13 @@ void printSymbolTable(void) {/* Debug only. */
 static label *createLabel(char *labelName, int address, bool isExt, bool isOp) {
 	label *newLabel = malloc(sizeof(label));
 	if (newLabel == NULL) {
-		error(sprintf(errMsg, OUT_OF_RAM));
+		error(sprintf(error_message, OUT_OF_MEMORY));
 		return NULL;
 	}
 
-	if (!copyStr(&newLabel->labelName, labelName)) {
+	if (!copy_string(&newLabel->labelName, labelName)) {
 		free(newLabel);
-		error(sprintf(errMsg, OUT_OF_RAM));
+		error(sprintf(error_message, OUT_OF_MEMORY));
 		return NULL;
 	}
 	newLabel->address = address;
@@ -222,7 +222,7 @@ static labelNode *createLabelNode(label *this, labelNode *next) {
 			free(this->labelName);
 		free(this);
 		free(newLabelNode);
-		error(sprintf(errMsg, OUT_OF_RAM));
+		error(sprintf(error_message, OUT_OF_MEMORY));
 		return NULL;
 	}
 

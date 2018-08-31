@@ -18,9 +18,9 @@ void saveFiles(void) {
 	bool keep;
 	int i = MEMORY_START;
 
-	copyStr(&name, currFileName);
+	copy_string(&name, cur_file_name);
 
-	name[strlen(name) - EXT_LEN + 1] = '\0';
+	name[strlen(name) - EXTENSION_LENGTH + 1] = '\0';
 	strcat(name, OBJ_EXT);
 	out = fopen(name, "w");
 	keep = saveObj(out, &i);
@@ -28,7 +28,7 @@ void saveFiles(void) {
 	if (!keep)
 		remove(name);
 
-	name[strlen(name) - EXT_LEN + 1] = '\0';
+	name[strlen(name) - EXTENSION_LENGTH + 1] = '\0';
 	strcat(name, EXT_EXT);
 
 	out = fopen(name, "w");
@@ -37,7 +37,7 @@ void saveFiles(void) {
 	if (!keep)
 		remove(name);
 
-	name[strlen(name) - EXT_LEN] = '\0';
+	name[strlen(name) - EXTENSION_LENGTH] = '\0';
 	strcat(name, ENT_EXT);
 	out = fopen(name, "w");
 	keep = saveEnt(out, &i);

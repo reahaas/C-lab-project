@@ -18,16 +18,16 @@ extern int dc;
 FLAG assembler(FILE *sourceFile);
 input_line *getLine(FILE *);
 void freeLine(input_line *line);
-bool validLabel(const char *);
-bool validReg(const char* registerStr);
-bool copyStr(char **dest, const char *src);
+bool valid_label(const char *);
+bool valid_register(const char *registerStr);
+bool copy_string(char **dest, const char *src);
 bool strToInt(const char *str, int *dest);
 static bool handleForAddressing2(char *src, input_line *line);
-bool validLabelForAdrresing2(char* labelStr);
-bool validNumber(char *str);
+bool valid_label_for_second_adrresing(char *labelStr);
+bool valid_number(char *str);
 
 /* First run functions */
-FLAG firstRun(FILE *sourceFile);
+FLAG firstCycle(FILE *sourceFile);
 void relocate(int paddin);
 
 /* Second run functions */

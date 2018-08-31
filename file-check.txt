@@ -17,7 +17,7 @@ symbolTable.c
 test*.as
 
 /*need to be changed*/
-firstRun.c -> handleline()
+firstCycle.c -> handleline()
 symbolTable.h
 
 

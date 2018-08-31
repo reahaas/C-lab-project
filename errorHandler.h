@@ -15,37 +15,37 @@
 #define	EXIT_SUCCESS	0	/* Successful exit status.  */
 
 /* Constants */
-#define ERROR_MAX_LEN 200
+#define MAXIMUM_LENGTH 200
 
 /* Error messages */
-#define ERR_STR "File:%s Line:%d: %s\n"
-#define TOO_LESS_FILES "Not enough arguments. You need to specify at least one file to compile.\n"
-#define ASSEMBLER_ERR "Assembler error! Could not finish for file: %s%s.\n"
-#define ASSEMBLER_SUCCESS "Assembler finished for file: %s%s.\n"
-#define TOO_LESS_ARGS "Not enough arguments. "
-#define MULTI_LABEL_DEF "Multiple definitions of label %s. Please define each label exactly once. "
-#define LABEL_NAME_ERR "Unknown error with label name. Received value of NULL. "
-#define OUT_OF_RAM "Insufficient memory. "
-#define OUT_OF_STORAGE "Insufficient storage space. "
-#define LINE_EXCEEDS_LEN "The input line exceeds the max length. "
-#define ILLEGAL_LABEL "Illegal label name: %s. "
+#define ERR_STR "File:%s Line:%d: %s\n"               /* TODO change the name and content */
+#define FILES_SHORT "Lack of arguments. Specify at least one more file to compile.\n"
+#define ASSEMBLER_ERROR "Assembler error! Failed finish for file: %s%s.\n"
+#define ASSEMBLER_DONE "Assembler done for file: %s%s.\n"
+#define LACK_OF_ARGUMENTS "Lack of arguments. "
+#define MULTIPLE_LABEL_DEFINITIONS "Multiple definitions of the label: %s. Only can be exist. "
+#define LABEL_NAME_MISSING "Label name missing."
+#define OUT_OF_MEMORY "Limited memory. "
+#define OUT_OF_STORAGE "Limited storage space. "
+#define LINE_EXCEEDS_LENGTH "Line exceeds the maximum length. "
+#define ILLEGAL_LABEL "Illegal label: %s. "
 #define SYNTAX_ERROR "Syntax error. "
-#define MISSING_OP "No operator or instruction is recognised. "
-#define UNKNOWN_OP "The operator's or instruction's name is not recognised. "
+#define MISSING_OPERATOR "Operator or instruction missing "
+#define UNKNOWN_OPERATOR "Unknown operator's or instruction's name. "
 #define UNKNOWN_LABEL "Unknown label: %s. "
-#define INVALID_ARG "Invalid argument: %s. "
-#define UNKNOWN_ARG_TYPE "The argument type could not be resolved. "
-#define EMPTY_ARG "An argument cannot be empty. "
-#define WRONG_STR_FORMAT "The argument is in a wrong string format. "
-#define WRONG_ARG_COUNT "Wrong amount of arguments. "
-#define UNKNOWN_ERR "An unknown error has been encountered. "
-#define WRONG_ARG_FOR_FUNC "Incompatible arguments' type for function. "
+#define INVALID_ARGUMENT "Invalid argument: %s. "
+#define UNKNOWN_ARGUMENT_TYPE "Unknown argument type. "
+#define EMPTY_ARGUMENT "Empty argument. "
+#define INELIGIBLE_FORMAT "Argument format not suitable. "
+#define INELIGIBLE_ARGUMENT_COUNT "Count of argument is ineligible. "
+#define UNKNOWN_ERROR "Unknown error. "
+#define INELIGIBLE_ARGUMENTS_TYPE "Argument type ineligible. "
 #define ENT_TO_UNDEF "Call to .entry with undefined label: %s. "
 
 /* Global variables */
-extern char errMsg[];
+extern char error_message[];
 
-extern char *currFileName;
+extern char *cur_file_name;
 FLAG error(int status);
 void report(int lineIndex);
 

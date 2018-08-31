@@ -19,16 +19,16 @@ FLAG secondRun(FILE *src) {
 	relocate(cmd_list.length); /*sorting out the addressing with padding*/
 	for (lineIndex = 1; true; lineIndex++) { /* Runs through all the lines. */
 		if ((line = getLine(src))) {
-			if (line->isEOF) {
+			if (line->is_end_of_file) {
 				freeLine(line);
 				break; /* End when EOF is encountered */
 			}
-			if (line->isEffectless) {
+			if (line->unnecessary) {
 				continue;
 			}
 			if (!handleLine2(line)) {
 				if (cmd_list.length + data_list.length > MAX_MEMORY_SIZE) {
-					error(sprintf(errMsg, OUT_OF_STORAGE));
+					error(sprintf(error_message, OUT_OF_STORAGE));
 					report(lineIndex);
 					return flag;
 				}
@@ -66,7 +66,7 @@ static bool handleLine2(input_line* line) {
 					srcArg.reg.destOperand = 0;
 				case IMD:
 					if (line->cmd == LEA) {
-						error(sprintf(errMsg, WRONG_ARG_FOR_FUNC));
+						error(sprintf(error_message, INELIGIBLE_ARGUMENTS_TYPE));
 						return false;
 					}
 					break;
@@ -81,7 +81,7 @@ static bool handleLine2(input_line* line) {
 			switch (destAdders = getArgWord(line->args[1], &destArg)) {
 				case IMD:
 					if (line->cmd != CMP) {
-						error(sprintf(errMsg, WRONG_ARG_FOR_FUNC));
+						error(sprintf(error_message, INELIGIBLE_ARGUMENTS_TYPE));
 						return false;
 					}
 				case DIR:
@@ -115,7 +115,7 @@ static bool handleLine2(input_line* line) {
 				addArg(destArg);
 			}
 		} else {
-			error(sprintf(errMsg, WRONG_ARG_COUNT));
+			error(sprintf(error_message, INELIGIBLE_ARGUMENT_COUNT));
 			return false;
 			/* Expected 2 arg error */
 		}
@@ -138,7 +138,7 @@ static bool handleLine2(input_line* line) {
 			switch (adders = getArgWord(line->args[0], &arg)) {
 			case IMD:
 				if (line->cmd != PRN) {
-					error(sprintf(errMsg, WRONG_ARG_FOR_FUNC));
+					error(sprintf(error_message, INELIGIBLE_ARGUMENTS_TYPE));
 					return false;
 					break;
 				}
@@ -157,7 +157,7 @@ static bool handleLine2(input_line* line) {
 				return false;
 			}
 		} else {
-			error(sprintf(errMsg, WRONG_ARG_COUNT));
+			error(sprintf(error_message, INELIGIBLE_ARGUMENT_COUNT));
 			return false;
 			/* Expected 1 arg error */
 				break;
@@ -229,7 +229,7 @@ static bool handleLine2(input_line* line) {
 			}
 
 		} else {
-			error(sprintf(errMsg, WRONG_ARG_COUNT));
+			error(sprintf(error_message, INELIGIBLE_ARGUMENT_COUNT));
 			return false;
 		}/*end of JWP (one or three operands) group*/
 			break;
@@ -239,7 +239,7 @@ static bool handleLine2(input_line* line) {
 		if (line->args == NULL) { /*no args*/
 			addCmd(0, IMD, IMD, line->cmd, NO_ARGS, 0);
 		} else {
-			error(sprintf(errMsg, WRONG_ARG_COUNT));
+			error(sprintf(error_message, INELIGIBLE_ARGUMENT_COUNT));
 			return false;
 		}
 		break;
@@ -252,7 +252,7 @@ static bool handleLine2(input_line* line) {
 					return false;
 				}
 			} else {
-				error(sprintf(errMsg, ENT_TO_UNDEF, line->args[0]));
+				error(sprintf(error_message, ENT_TO_UNDEF, line->args[0]));
 				return false;
 			}
 		}
@@ -264,7 +264,7 @@ static bool handleLine2(input_line* line) {
 		break;
 	default:
 		/* Not a command error. Probably impossible to reach. */
-		error(sprintf(errMsg, UNKNOWN_ERR));
+		error(sprintf(error_message, UNKNOWN_ERROR));
 		return false;
 		break;
 	}
@@ -279,26 +279,26 @@ static addressing getArgWord(const char *str, word *wrd) { /*wrd is srcArg or de
 
 	if (str[0] == IMD_FLAG) {/* Is immediate number */
 		if (!strToInt(str + 1, &num)) {
-			error(sprintf(errMsg, SYNTAX_ERROR UNKNOWN_ARG_TYPE));
+			error(sprintf(error_message, SYNTAX_ERROR UNKNOWN_ARGUMENT_TYPE));
 			return -1;
 		}
 		wrd->num.decode = ABS;
 		wrd->num.value =  num % (int) pow(2, VALUE_SIZE);  /* modulo on binary number remains only the less significant digits */
 		return IMD;
-	} else if (validReg(str)) {/* Is register name */
+	} else if (valid_register(str)) {/* Is register name */
 		wrd->reg.decode = ABS;
 		wrd->reg.destOperand = str[1] - '0'; /*r3  = str[1] - '0' = 3, gives the number of register*/
 		wrd->reg.srcOperand = 0;
 		return REG;
-	} else if (validLabel(str)) {/* Is label name */
+	} else if (valid_label(str)) {/* Is label name */
 		if (!(lbl = getLabel(str))) { /*getting the label from symbol list list*/
-			error(sprintf(errMsg, UNKNOWN_LABEL, str));
+			error(sprintf(error_message, UNKNOWN_LABEL, str));
 			return -1;
 		}
 		wrd->num.value = lbl->address;
 		wrd->num.decode = lbl->isExt ? EXT : RLC;
 		return DIR;
 	}
-	error(sprintf(errMsg, SYNTAX_ERROR INVALID_ARG, str));/* Syntax error */
+	error(sprintf(error_message, SYNTAX_ERROR INVALID_ARGUMENT, str));/* Syntax error */
 	return -1;
 }

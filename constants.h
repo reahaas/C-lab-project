@@ -10,8 +10,8 @@
 #define MAX_MEMORY_SIZE 1000
 #define MAX_FILE_ZISE 1000
 #define MEMORY_START 100
-#define LINE_MAX_LEN 81 /* Extra one for \0 */
-#define MAX_ARG_COUNT ((LINE_MAX_LEN - 3)/2 + 1) /* Max arg count assuming shortest command is 3 letters and shortest args are at least 1 character */
+#define MAXIMUM_LINE_LENGTH 81 /* Extra one for \0 */
+#define MAX_ARG_COUNT ((MAXIMUM_LINE_LENGTH - 3)/2 + 1) /* Max arg count assuming shortest command is 3 letters and shortest args are at least 1 character */
 #define DECODE_SIZE 2
 #define OPERAND_SIZE 2
 #define RED_OPERAND_SIZE 6
@@ -22,8 +22,8 @@
 #define OPCODES_AMOUNT 16
 #define WORD_SIZE 14
 #define REG_AMOUNT 8
-#define EXT_LEN 4 /* Length of the extension file name. */
-#define INPUT_EXT ".as"
+#define EXTENSION_LENGTH 4
+#define INPUT_EXTENSION ".as"
 #define OBJ_EXT ".ob"
 #define EXT_EXT ".ext"
 #define ENT_EXT ".ent"
@@ -84,11 +84,11 @@ typedef enum {
 #define IMD_FLAG '#'
 #define ARG_SEPERATOR ','
 #define SPACE ' '
-#define OPEN_PARENTHESIS "("
-#define CLOSE_PARENTHESIS ")"
+#define OPEN_PARENTHESES "("
+#define CLOSE_PARENTHESES ")"
 /* Flag status */
 typedef enum {
-	ASM_SUCCESS, ASM_FAILURE
+	ASSEMBLER_SUCCESS, ASSEMBLER_FAILURE
 } FLAG;
 
 typedef enum {

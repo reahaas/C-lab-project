@@ -40,8 +40,8 @@ typedef struct{
 	char *label;
 	int cmd;
 	char **args;
-	bool isEffectless;
-	bool isEOF;
+	bool unnecessary;
+	bool is_end_of_file;
 }input_line;
 
 #endif

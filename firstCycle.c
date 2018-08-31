@@ -1,7 +1,3 @@
-/*
- * firstRun.c
- */
-
 #include "assembler.h"
 #include "dataTable.h"
 #include "cmdTable.h"
@@ -11,28 +7,28 @@ static bool handleLine(input_line*);
 
 
 /**
- * the first run count the ic, dc, and build the symbol table.
- * @param src the file to run on.
- * @return flag as according to if error found in the file or not (true/false).
+ * first cycle update ic and dc and build the symbol table.
+ * @param src, the file the cycle work on.
+ * @return flag, while error occur in the file, flag return true.
  */
-FLAG firstRun(FILE *src) {
+FLAG firstCycle(FILE *src) {
 	input_line *line;
 	int lineIndex; /* num of row in the file */
 	fseek(src, 0L, SEEK_SET);
 	for (lineIndex = 1; true; lineIndex++) { /* Runs through all the lines. */
 		if ((line = getLine(src))) /* line is an object that contains all the data from one "string" line in the file. */
 		{
-			if (line->isEOF) {
+			if (line->is_end_of_file) {
                 return false;
 				break; /* End when EOF is encountered */
 			}
-			if (line->isEffectless) {
+			if (line->unnecessary) {
 				continue;
 			}
 			if (!handleLine(line)) {
 				report(lineIndex);
 				if (cmd_list.length + data_list.length >= MAX_MEMORY_SIZE) {
-					error(sprintf(errMsg, OUT_OF_STORAGE));
+					error(sprintf(error_message, OUT_OF_STORAGE));
 					return flag;
 				}
 			}
@@ -42,7 +38,7 @@ FLAG firstRun(FILE *src) {
 		freeLine(line);
 	}
 	return flag;
-}/* End firstRun */
+}/* End firstCycle */
 
 /* Analyses a line of code and operates accordingly,working by cases, if needed put in label list*/
 static bool handleLine(input_line* line) {
@@ -60,16 +56,16 @@ static bool handleLine(input_line* line) {
     case LEA:
         if (line->args != NULL) {
             if (line->args[1] != NULL) {
-                if (!(validReg(line->args[0]) && validReg(line->args[1]))) { /* If not register to register*/
+                if (!(valid_register(line->args[0]) && valid_register(line->args[1]))) { /* If not register to register*/
                     wordCounter++; /* Two extra words*/
                 }
             } else {
-                error(sprintf(errMsg, TOO_LESS_ARGS));
+                error(sprintf(error_message, LACK_OF_ARGUMENTS));
                 return false;
                 /* Expected 2 args get one error */
             }
         } else {
-            error(sprintf(errMsg, TOO_LESS_ARGS));
+            error(sprintf(error_message, LACK_OF_ARGUMENTS));
             return false;
             /*Expected 2 args error */
         }
@@ -105,11 +101,11 @@ static bool handleLine(input_line* line) {
             wordCounter++;
             if(line->args[1] != NULL && line->args[2] != NULL ){ /*if it is addressing 2*/
                 wordCounter++;
-                if(!validReg(line->args[1]) || !validReg(line->args[2]))
+                if(!valid_register(line->args[1]) || !valid_register(line->args[2]))
                     wordCounter++;
             }
         } else {
-            error(sprintf(errMsg, TOO_LESS_ARGS));
+            error(sprintf(error_message, LACK_OF_ARGUMENTS));
             return false;
             /*Expected 2 args error */
         }
@@ -139,18 +135,18 @@ static bool handleLine(input_line* line) {
                 num = (int) strtol(*arg++, &rst, 10);
                 if (strcmp(rst, "") == 0) { /* If no extra string*/
                     if (!(addData(num))) {
-                        error(sprintf(errMsg, OUT_OF_RAM));
+                        error(sprintf(error_message, OUT_OF_MEMORY));
                         return false;
                         /* Did't success to addData error */
                     }
                 } else {
-                    error(sprintf(errMsg, UNKNOWN_ARG_TYPE));
+                    error(sprintf(error_message, UNKNOWN_ARGUMENT_TYPE));
                     return false;
                     /* String mix with int error */
                 }
             }
         } else {
-            error(sprintf(errMsg, TOO_LESS_ARGS));
+            error(sprintf(error_message, LACK_OF_ARGUMENTS));
             return false;
             /* Expected at least 1 arg error */
         }
@@ -169,27 +165,27 @@ static bool handleLine(input_line* line) {
             if (*c++ == STR_DELIM) {
                 while (*c != STR_DELIM) {
                     if (!(addData(*c++))) {
-                        error(sprintf(errMsg, OUT_OF_RAM));
+                        error(sprintf(error_message, OUT_OF_MEMORY));
                         return false;
                         /* Did't success to add char error */
                     }
                 }
                 if (*++c != '\0') {
-                    error(sprintf(errMsg, WRONG_STR_FORMAT));
+                    error(sprintf(error_message, INELIGIBLE_FORMAT));
                     return false;
                 }
                 if (!(addData('\0'))) { /* End of string*/
-                    error(sprintf(errMsg, OUT_OF_RAM));
+                    error(sprintf(error_message, OUT_OF_MEMORY));
                     return false;
                     /* Did't succeed to add char error */
                 }
             } else {
-                error(sprintf(errMsg, WRONG_STR_FORMAT));
+                error(sprintf(error_message, INELIGIBLE_FORMAT));
                 return false;
                 /* Not in a string format error */
             }
         } else {
-            error(sprintf(errMsg, WRONG_ARG_COUNT));
+            error(sprintf(error_message, INELIGIBLE_ARGUMENT_COUNT));
             return false;
             /* Expected 1 arg error */
         }
@@ -198,7 +194,7 @@ static bool handleLine(input_line* line) {
         /* Save in symbol table*/
         isExt = true;
         if (line->args[1] == NULL) { /* Only one arg*/
-            if (validLabel(line->args[0])) {
+            if (valid_label(line->args[0])) {
                 if (addLabel(line->args[0], 0, isExt, isOp)) {
 
                 } else {
@@ -206,12 +202,12 @@ static bool handleLine(input_line* line) {
                     /* Did't success to add label error */
                 }
             } else {
-                error(sprintf(errMsg, ILLEGAL_LABEL, line->args[0]));
+                error(sprintf(error_message, ILLEGAL_LABEL, line->args[0]));
                 return false;
                 /* Extern not a valid label error */
             }
         } else {
-            error(sprintf(errMsg, TOO_LESS_ARGS));
+            error(sprintf(error_message, LACK_OF_ARGUMENTS));
             return false;
             /* Expected at least 1 arg error */
         }
@@ -221,7 +217,7 @@ static bool handleLine(input_line* line) {
         break;
     default:
         /* Not a command error. Probably impossible to reach. */
-        error(sprintf(errMsg, UNKNOWN_ERR));
+        error(sprintf(error_message, UNKNOWN_ERROR));
         return false;
         break;
 	}
