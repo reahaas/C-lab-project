@@ -46,15 +46,19 @@ int main(int argc, char* argv[]) {
 FLAG assembler(FILE *src) {
 	flag = ASM_SUCCESS;
 
+	printf("\nstart the first run\n\n");
 	firstRun(src); /* if an error occurs during the first run, flag turn to ASM_FAILURE */
-	if (flag == ASM_SUCCESS)
+	if (flag == ASM_SUCCESS) {
+		printf("\nfirst run succede, start secont run\n\n");
 		secondRun(src); /* if an error occur during the second run, flag turn to ASM_FAILURE */
-	if (flag == ASM_SUCCESS)
+	} else {
+		printf("\nfirst run failure\n\n");
+	}
+	if (flag == ASM_SUCCESS) {
+		printf("\nsecond run succeded, start save files\n\n");
 		saveFiles();
-
-	resetCmdTable();
-	resetDataTable();
-	freeSymbolTable();
-	return flag;
+		printf("\nsave files function finished\n\n");
+	} else {
+		printf("\nsecond run failure\n\n");
+	}
 }
-

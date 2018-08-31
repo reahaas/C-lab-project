@@ -14,7 +14,7 @@ dataTable.h
 structs.h
 symbolStructs.h
 symbolTable.c
-
+test*.as
 
 /*need to be changed*/
 firstRun.c -> handleline()
@@ -24,7 +24,6 @@ symbolTable.h
 /* not looked yet */
 saveFiles.c
 saveFiles.h
-assembler.c
 assembler.h
+assembler.c
 README.md
-test*.as

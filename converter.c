@@ -9,14 +9,14 @@
 char * base10to2Wierd(long unsigned int value) {
 	int i;
 	const char base2[3] = "./";
-	char *numInBaseWeird2 = (char *) malloc(WORD_SIZE + 1); /* the (+1) is for '\0' */
+	char *numInBaseWeird2 = (char *) malloc(WORD_SIZE+1); /* the (+1) is for '\0' */
 	if (!numInBaseWeird2) {
 		return NULL;
 	}
-	for (i=0; i < WORD_SIZE ;i++){
+	for (i=0; i < WORD_SIZE-1 ;i++){
 		numInBaseWeird2[i] = '.';
 	}
-	numInBaseWeird2[WORD_SIZE] = '\n'; /* the end of the string */
+	numInBaseWeird2[WORD_SIZE-1] = '\n'; /* the end of the string */
 	while(value!=0)
 	{
 		numInBaseWeird2[i] = base2[value%2];
