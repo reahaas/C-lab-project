@@ -59,7 +59,7 @@ static bool saveObj(FILE *file, int *i) {
 		}
 	}
 	fprintf(file, "%s\t%s\n", valueToBase10DecimalString(cmdAmount),
-			base10to2Wierd(data_list.length));
+			valueToBase10DecimalString(data_list.length));
 	for (cmd_node = cmd_list.head; cmd_node != NULL;
 			cmd_node = cmd_node->next, (*i)++) {
 		fprintf(file, "%s\t%s\n", valueToBase10DecimalString(*i),
