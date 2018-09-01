@@ -68,7 +68,7 @@ typedef enum {
 #define LABEL_DELIM ':'
 #define STR_DELIM '"'
 #define REG_FLAG 'r'
-#define IMD_FLAG '#'
+#define IMMEDIATE_FLAG '#'
 #define ARG_SEPERATOR ','
 #define SPACE ' '
 #define OPEN_PARENTHESES "("

@@ -40,7 +40,6 @@ FLAG secondCycle(FILE *src){
 }
 
 static bool handleLine2(input_line* line) {
-	char* argslabel,*args2,*args3;                          /*TODO needed? while delete those params program not compile*/
 
 	switch (line->cmd) {
 	case MOV:
@@ -116,9 +115,6 @@ static bool handleLine2(input_line* line) {
 	case DEC:
 	case RED:
 	case PRN:
-		argslabel = line-> args[0];
-			args2 = line -> args[1];
-			args3 = line -> args[2];
 			if (line->args != NULL && line->args[1] == NULL){
 			addressing adders;
 			word arg;
@@ -255,7 +251,7 @@ static addressing getArgWord(const char *str, word *wrd){
 	int num;
 	label *lbl;
 
-	if (str[0] == IMD_FLAG) {                    					/*TODO change IMD_FLAG*/
+	if (str[0] == IMMEDIATE_FLAG) {                    					/*TODO change IMMEDIATE_FLAG*/
 		if (!string_to_int(str + 1, &num)) {
 			error(sprintf(error_message, SYNTAX_ERROR UNKNOWN_ARGUMENT_TYPE));
 			return -1;

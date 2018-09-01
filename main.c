@@ -44,8 +44,9 @@ FLAG assembler(FILE *source_file){
 	if (flag == ASSEMBLER_SUCCESS){
 		printf("\nFirst cycle succeeded, second cycle begin\n\n");
 		secondCycle(source_file);
-	} else{
+	} else {
 		printf("\nFirst cycle failed\n\n");
+		return ASSEMBLER_FAILURE;
 	}
 	if (flag == ASSEMBLER_SUCCESS){
 		printf("\nSecond cycle succeeded, save files\n\n");
@@ -54,5 +55,7 @@ FLAG assembler(FILE *source_file){
 		printf("\nSave files finished\n\n");
 	} else {
 		printf("\nSecond cycle failed\n\n");
+		return ASSEMBLER_FAILURE;
 	}
+	return ASSEMBLER_SUCCESS;
 }

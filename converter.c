@@ -1,6 +1,3 @@
-/*
- * converter.c
- */
 
 #include "assembler.h"    
 #include "converter.h"
@@ -37,12 +34,11 @@ char *valueToBase10DecimalString(long unsigned int value){
 		return NULL;
 	}
 	if(value<=999){
-		sprintf( numInBase10Decimal, "0%d", value );
+		sprintf( numInBase10Decimal, "0%lu", value );
 	}
 	else if (value<=9999){
-		sprintf( numInBase10Decimal, "%d", value) ;
+		sprintf( numInBase10Decimal, "%lu", value) ;
 	}
 	return numInBase10Decimal;
-
 }
 

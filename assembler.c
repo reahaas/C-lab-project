@@ -17,8 +17,8 @@ const char *ops[] = { "mov", "cmp", "add", "sub", "not", "clr", "lea",
                       "inc", "dec", "jmp", "bne", "red", "prn", "jsr", "rts", "stop",
                       ".data", ".string", ".entry", ".extern" };
 
- static bool check_and_fix_second_addr(char *src, input_line *line) {       /* TODO check if static needed*/
-	 static char *symbol, *first_parameter, *second_parameter, *check = NULL, *has_spaces = NULL;
+bool check_and_fix_second_addr(char *src, input_line *line) {       /* TODO check if static needed*/
+  	 char *symbol, *first_parameter, *second_parameter, *check = NULL, *has_spaces = NULL;
 	 check = strchr(src, '(');
 	 has_spaces = strchr(src, SPACE);
 	 if (check != NULL){
@@ -197,8 +197,10 @@ bool rec_label(char *tmp_str, input_line *line){
 	if (tmp_str[(length)] == LABEL_DELIM){                   /*TODO change delim */
 		tmp_str[length] = '\0';
 		if (valid_label(tmp_str)){
-			if (copy_string(&(line->label), tmp_str))
-                string_index += strlen(line->label) + 2;
+			if (copy_string(&(line->label), tmp_str)) {
+				string_index += strlen(line->label) + 2;
+				return true;
+			}
 			else {
 				free_line(line);
 				return false;
@@ -212,6 +214,7 @@ bool rec_label(char *tmp_str, input_line *line){
 		line->label = NULL;
 		return true;
 	}
+
 }
 
 void free_line(input_line *line){
@@ -345,12 +348,16 @@ static int get_operator_valid(const char **ops, const char *str, const int ops_a
 
 bool valid_number(char *str){
 	int num;
-	if (str[0] == IMD_FLAG) {                             /*TODO change IMD_FLAG*/
+	if (str[0] == IMMEDIATE_FLAG){
 		if (!string_to_int(str + 1, &num)) {
 			error(sprintf(error_message, SYNTAX_ERROR UNKNOWN_ARGUMENT_TYPE));
 			return -1;
 		}
-	}														/* TODO return some value in else*/
+		return true;
+	}
+	else {
+		return true;
+	}
 }
 
 bool valid_label_for_second_addressing(char *label_string){

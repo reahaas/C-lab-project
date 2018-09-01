@@ -21,7 +21,7 @@ bool valid_label(const char *);
 bool valid_register(const char *string_register);
 bool copy_string(char **dest, const char *src);
 bool string_to_int(const char *str, int *dest);
-static bool check_and_fix_second_addr(char *src, input_line *line);
+bool check_and_fix_second_addr(char *src, input_line *line);
 bool valid_label_for_second_addressing(char *label_string);
 bool valid_number(char *str);
 
