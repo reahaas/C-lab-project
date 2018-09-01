@@ -17,7 +17,7 @@ const char *ops[] = { "mov", "cmp", "add", "sub", "not", "clr", "lea",
                       "inc", "dec", "jmp", "bne", "red", "prn", "jsr", "rts", "stop",
                       ".data", ".string", ".entry", ".extern" };
 
- static bool check_and_fix_second_addr(char *src, input_line *line) {
+ static bool check_and_fix_second_addr(char *src, input_line *line) {       /* TODO check if static needed*/
 	 static char *symbol, *first_parameter, *second_parameter, *check = NULL, *has_spaces = NULL;
 	 check = strchr(src, '(');
 	 has_spaces = strchr(src, SPACE);
@@ -350,7 +350,7 @@ bool valid_number(char *str){
 			error(sprintf(error_message, SYNTAX_ERROR UNKNOWN_ARGUMENT_TYPE));
 			return -1;
 		}
-	}
+	}														/* TODO return some value in else*/
 }
 
 bool valid_label_for_second_addressing(char *label_string){
