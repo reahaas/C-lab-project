@@ -37,13 +37,13 @@ int main(int argc, char* argv[]) {
 	}
 }
 
-FLAG assembler(FILE *src){
+FLAG assembler(FILE *source_file){
 	flag = ASSEMBLER_SUCCESS;
 	printf("\nBegin of the first cycle\n\n");
-	firstCycle(src);
+	firstCycle(source_file);
 	if (flag == ASSEMBLER_SUCCESS){
-		printf("\nFirst cycle succeeded, start of the second cycle\n\n");
-		secondCycle(src);
+		printf("\nFirst cycle succeeded, second cycle begin\n\n");
+		secondCycle(source_file);
 	} else{
 		printf("\nFirst cycle failed\n\n");
 	}
@@ -51,7 +51,7 @@ FLAG assembler(FILE *src){
 		printf("\nSecond cycle succeeded, save files\n\n");
 		printf("Data table is:\n\n\n");
 		saveFiles();
-		printf("\nSave files function finished\n\n");
+		printf("\nSave files finished\n\n");
 	} else {
 		printf("\nSecond cycle failed\n\n");
 	}

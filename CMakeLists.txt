@@ -15,15 +15,15 @@ add_executable(C_lab_project
         converter.h
         dataTable.c
         dataTable.h
-        errorHandler.c
-        errorHandler.h
+        errorStates.c
+        errorStates.h
         firstCycle.c
         main.c
         README.md
         saveFiles.c
         saveFiles.h
         secondCycle.c
-        structs.h
+        structures.h
         symbolStructs.h
         symbolTable.c
         symbolTable.h)

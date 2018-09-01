@@ -133,12 +133,12 @@ char *popEnt(int *address) {
 } /* End popEnt */
 
 /* Fix all relocatable */
-void relocate(int paddin) {
+void relocate(int spacing) {
 	labelNode *node = symbol_list.head;
 	if (node) {
 		do {
 			if ((!node->this->isOp) && (!node->this->isExt)){
-				node->this->address += paddin;
+				node->this->address += spacing;
 			}
 		} while ((node = node->next));
 	}

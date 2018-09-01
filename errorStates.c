@@ -2,7 +2,7 @@
  * errorHandler.c
  */
 
-#include "errorHandler.h"
+#include "errorStates.h"
 #include "constants.h"
 
 extern int flag;

@@ -1,6 +1,3 @@
-/*
- * symbolStructs.h
- */
 #ifndef SYMBOLSTRUCTS_H
 #define SYMBOLSTRUCTS_H
 #include "symbolTable.h"

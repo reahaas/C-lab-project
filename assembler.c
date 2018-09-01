@@ -1,5 +1,5 @@
 #include "assembler.h"
-#include "errorHandler.h"
+#include "errorStates.h"
 #include "string.h"
 
 /* External variables */
@@ -14,8 +14,8 @@ void trimmer(char * command_string, input_line * line);
 bool rec_label(char *tmp_str, input_line *line);
 
 const char *ops[] = { "mov", "cmp", "add", "sub", "not", "clr", "lea",
-                      "inc", "dec", "jmp", "bne", "red", "prn", "jsr", "rts", "stop", /* Ops until here */
-                      ".data", ".string", ".entry", ".extern" }; /* Instructions *//* The order of these command stay identical to the order of the enum constants in constants.h so the index will match the enum value */
+                      "inc", "dec", "jmp", "bne", "red", "prn", "jsr", "rts", "stop",
+                      ".data", ".string", ".entry", ".extern" };
 
  static bool check_and_fix_second_addr(char *src, input_line *line) {
 	 static char *symbol, *first_parameter, *second_parameter, *check = NULL, *has_spaces = NULL;
@@ -36,15 +36,15 @@ const char *ops[] = { "mov", "cmp", "add", "sub", "not", "clr", "lea",
 		 }
 		 else {
 			 if (!(copy_string(&(line->args[0]), symbol))){
-				 freeLine(line);
+				 free_line(line);
 				 return false;
 			 }
 			 if (!(copy_string(&(line->args[1]), first_parameter))){
-				 freeLine(line);
+				 free_line(line);
 				 return false;
 			 }
 			 if (!(copy_string(&(line->args[2]), second_parameter))){
-				 freeLine(line);
+				 free_line(line);
 				 return false;
 			 }
 			 return true;
@@ -62,7 +62,7 @@ const char *ops[] = { "mov", "cmp", "add", "sub", "not", "clr", "lea",
  * @param input, the in input from the user
  * @return pointer to the line that received
  * */
-input_line * getLine(FILE *input){
+input_line * get_line(FILE *input){
 	char cmd_string[MAXIMUM_LINE_LENGTH];
 	char temp_string[MAXIMUM_LINE_LENGTH];
 	input_line *line;
@@ -70,7 +70,7 @@ input_line * getLine(FILE *input){
 	int i, status;
 	if (!(line = malloc(sizeof(input_line)))){
 		error(sprintf(error_message, OUT_OF_MEMORY));
-		freeLine(line);
+		free_line(line);
 		return NULL;
 	}
 	line->cmd = -1;
@@ -95,7 +95,7 @@ input_line * getLine(FILE *input){
 		return line;
 	} else if (cmd_string[length - 1] != NEWLINE){
 		error(sprintf(error_message, LINE_EXCEEDS_LENGTH));
-		freeLine(line);
+		free_line(line);
 		return NULL;
 	}
 
@@ -110,12 +110,12 @@ input_line * getLine(FILE *input){
 
 	if (!sscanf((cmd_string + string_index), "%s", temp_string)){
 		error(sprintf(error_message, SYNTAX_ERROR MISSING_OPERATOR));
-		freeLine(line);
+		free_line(line);
 		return NULL;
 	}
 
 	if ((line->cmd = get_operator(ops, temp_string, sizeof(ops) / sizeof(ops[0]))) == -1) {
-		freeLine(line);
+		free_line(line);
 		return NULL;
 	} else
 		string_index += (strlen(temp_string) + (strcmp(temp_string, cmd_string + string_index) == 0 ? 0 : 1));
@@ -135,7 +135,7 @@ input_line * getLine(FILE *input){
 		else {
 			i++;
 			if (!(copy_string(&(line->args[0]), temp_string))){
-				freeLine(line);
+				free_line(line);
 				return NULL;
 			}
 		}
@@ -143,11 +143,11 @@ input_line * getLine(FILE *input){
 
 		for (; (status = get_next_argument(NULL, temp_string)); i++) {
 			if (status == -1) {
-				freeLine(line);
+				free_line(line);
 				return NULL;
 			}
 			if (!(copy_string(&(line->args[i]), temp_string))){
-				freeLine(line);
+				free_line(line);
 				return NULL;
 			}
 		}
@@ -200,12 +200,12 @@ bool rec_label(char *tmp_str, input_line *line){
 			if (copy_string(&(line->label), tmp_str))
                 string_index += strlen(line->label) + 2;
 			else {
-				freeLine(line);
+				free_line(line);
 				return false;
 			}
 		} else {
 			error(sprintf(error_message, ILLEGAL_LABEL, tmp_str));
-			freeLine(line);
+			free_line(line);
 			return false;
 		}
 	} else {
@@ -214,7 +214,7 @@ bool rec_label(char *tmp_str, input_line *line){
 	}
 }
 
-void freeLine(input_line *line){
+void free_line(input_line *line){
 	int i;
 	if (line -> is_end_of_file)
 		return;
@@ -251,8 +251,8 @@ bool valid_label(const char *label_str){
 	}
 }
 
-bool valid_register(const char *regStr){
-	return ((regStr[0] == REG_FLAG && '0' <= regStr[1] && regStr[1] <= '7'	&& regStr[2] == '\0') ? true : false);
+bool valid_register(const char *string_register){
+	return ((string_register[0] == REG_FLAG && '0' <= string_register[1] && string_register[1] <= '7'	&& string_register[2] == '\0') ? true : false);
 }
 
 
@@ -353,17 +353,17 @@ bool valid_number(char *str){
 	}
 }
 
-bool valid_label_for_second_addressing(char *labelStr){
+bool valid_label_for_second_addressing(char *label_string){
 	int i;
-	if (get_operator_valid(ops, labelStr, (sizeof(ops) / sizeof(ops[0]))) != -1){
-		error(sprintf(error_message, ILLEGAL_LABEL, labelStr));
+	if (get_operator_valid(ops, label_string, (sizeof(ops) / sizeof(ops[0]))) != -1){
+		error(sprintf(error_message, ILLEGAL_LABEL, label_string));
 		return false;
 	}
-	if (!isalpha(labelStr[0])){
+	if (!isalpha(label_string[0])){
 		return false;
 	} else {
-		for (i = 1; labelStr[i]; i++){
-			if (!isalnum(labelStr[i]))
+		for (i = 1; label_string[i]; i++){
+			if (!isalnum(label_string[i]))
 				return false;
 		}
 		return true;

@@ -8,15 +8,15 @@ static bool handleLine(input_line*);
 
 /**
  * first cycle update ic and dc and build the symbol table.
- * @param src, the file the cycle work on.
+ * @param source_file, the file the cycle work on.
  * @return flag, while error occur in the file, flag return true.
  */
-FLAG firstCycle(FILE *src) {
+FLAG firstCycle(FILE *source_file) {
 	input_line *line;
 	int lineIndex; /* num of row in the file */
-	fseek(src, 0L, SEEK_SET);
+	fseek(source_file, 0L, SEEK_SET);
 	for (lineIndex = 1; true; lineIndex++) { /* Runs through all the lines. */
-		if ((line = getLine(src))) /* line is an object that contains all the data from one "string" line in the file. */
+		if ((line = get_line(source_file))) /* line is an object that contains all the data from one "string" line in the file. */
 		{
 			if (line->is_end_of_file) {
                 return false;
@@ -35,7 +35,7 @@ FLAG firstCycle(FILE *src) {
 		} else {
 			report(lineIndex);
 		}
-		freeLine(line);
+        free_line(line);
 	}
 	return flag;
 }/* End firstCycle */

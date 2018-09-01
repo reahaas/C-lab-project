@@ -3,7 +3,7 @@
 #include "dataTable.h"
 #include "cmdTable.h"
 #include "symbolTable.h"
-#include "errorHandler.h"
+#include "errorStates.h"
 #include <math.h>
 
 static bool handleLine2(input_line*);
@@ -15,9 +15,9 @@ FLAG secondCycle(FILE *src){
 	fseek(src, 0L, SEEK_SET);                           /*TODO change seek_set*/
 	relocate(cmd_list.length);
 	for (line_index = 1; true; line_index++){
-		if ((line = getLine(src))){
+		if ((line = get_line(src))){
 			if (line->is_end_of_file){
-				freeLine(line);
+				free_line(line);
 				break;
 			}
 			if (line->unnecessary){
@@ -34,7 +34,7 @@ FLAG secondCycle(FILE *src){
 		} else {
 			report(line_index);
 		}
-		freeLine(line);
+		free_line(line);
 	}
 	return flag;
 }
@@ -83,7 +83,7 @@ static bool handleLine2(input_line* line) {
 					return false;
 			}
 
-			addCmd(ABS, dest_addres, src_addres, line->cmd, IRELEVANT_BITS, IRELEVANT_BITS);
+			addCmd(ABS, dest_addres, src_addres, line->cmd, NONE, NONE);
 			if (dest_addres == REG && (src_addres == REG )) {
 				word multiReg;
 				multiReg.reg.destOperand = dest_arg.reg.destOperand;
@@ -131,7 +131,7 @@ static bool handleLine2(input_line* line) {
 				}
 			case DIR:
 			case REG:
-				addCmd(ABS, adders, IMD, line->cmd, IRELEVANT_BITS, IRELEVANT_BITS);
+				addCmd(ABS, adders, IMD, line->cmd, NONE, NONE);
 				if (adders == DIR && arg.num.value == 0){
 					if (!addExt(line->args[0], getCmdLength() + 1)){
 						return false;
@@ -159,7 +159,7 @@ static bool handleLine2(input_line* line) {
 			switch (addres = getArgWord(line->args[0], &arg)){
 				case DIR:
 				case REG:
-					addCmd(ABS, addres, IMD, line->cmd, IRELEVANT_BITS, IRELEVANT_BITS);
+					addCmd(ABS, addres, IMD, line->cmd, NONE, NONE);
 					if (addres == DIR && arg.num.value == 0) {
 						if (!addExt(line->args[0], getCmdLength() + 1)) {
 							return false;
@@ -218,7 +218,7 @@ static bool handleLine2(input_line* line) {
 	case RTS:
 	case STOP:
 		if (line->args == NULL) {
-			addCmd(0, IMD, IMD, line->cmd, NO_ARGS, 0);
+			addCmd(0, IMD, IMD, line->cmd, NONE, 0);
 		} else {
 			error(sprintf(error_message, INELIGIBLE_ARGUMENT_COUNT));
 			return false;
