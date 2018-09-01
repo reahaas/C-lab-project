@@ -9,60 +9,55 @@
 static bool handleLine2(input_line*);
 static addressing getArgWord(const char *str, word *wrd);
 
-FLAG secondCycle(FILE *src) {
+FLAG secondCycle(FILE *src){
 	input_line *line;
-	int lineIndex;
-	fseek(src, 0L, SEEK_SET);
-	relocate(cmd_list.length); /*sorting out the addressing with padding*/
-	for (lineIndex = 1; true; lineIndex++) { /* Runs through all the lines. */
-		if ((line = getLine(src))) {
-			if (line->is_end_of_file) {
+	int line_index;
+	fseek(src, 0L, SEEK_SET);                           /*TODO change seek_set*/
+	relocate(cmd_list.length);
+	for (line_index = 1; true; line_index++){
+		if ((line = getLine(src))){
+			if (line->is_end_of_file){
 				freeLine(line);
-				break; /* End when EOF is encountered */
+				break;
 			}
-			if (line->unnecessary) {
+			if (line->unnecessary){
 				continue;
 			}
-			if (!handleLine2(line)) {
+			if (!handleLine2(line)){
 				if (cmd_list.length + data_list.length > MAX_MEMORY_SIZE) {
 					error(sprintf(error_message, OUT_OF_STORAGE));
-					report(lineIndex);
+					report(line_index);
 					return flag;
 				}
-				report(lineIndex);
+				report(line_index);
 			}
 		} else {
-			report(lineIndex);
+			report(line_index);
 		}
 		freeLine(line);
 	}
 	return flag;
-}/* End secondCycle */
+}
 
-/* Analyses an line of code and operates accordingly */
 static bool handleLine2(input_line* line) {
-	char* argslabel,*args2,*args3;
-
+	char* argslabel,*args2,*args3;                          /*TODO needed? while delete those params program not compile*/
 
 	switch (line->cmd) {
-	/* Two operands group */
 	case MOV:
 	case CMP:
 	case ADD:
 	case SUB:
 	case LEA:
-		if (line->args != NULL && line->args[1] != NULL && line->args[2] == NULL) { /* Two args */
-			addressing srcAdders, destAdders; /*0,1,2,3*/
-			word srcArg, destArg;/*command,regiter or number*/
+		if (line->args != NULL && line->args[1] != NULL && line->args[2] == NULL){
+			addressing src_addres, dest_addres;
+			word src_arg, dest_arg;
 
-			/* Handle source arg  */
-
-			switch (srcAdders = getArgWord(line->args[0], &srcArg)) { /*getting the src address*/
+			switch (src_addres = getArgWord(line->args[0], &src_arg)){
 				case REG:
-					srcArg.reg.srcOperand = srcArg.reg.destOperand; /*fixing srcArg to be the src*/
-					srcArg.reg.destOperand = 0;
+					src_arg.reg.srcOperand = src_arg.reg.destOperand;
+					src_arg.reg.destOperand = 0;
 				case IMD:
-					if (line->cmd == LEA) {
+					if (line->cmd == LEA){
 						error(sprintf(error_message, INELIGIBLE_ARGUMENTS_TYPE));
 						return false;
 					}
@@ -73,9 +68,8 @@ static bool handleLine2(input_line* line) {
 				default:
 					return false;
 			}
-			/* handle dest arg  */
 
-			switch (destAdders = getArgWord(line->args[1], &destArg)) {
+			switch (dest_addres = getArgWord(line->args[1], &dest_arg)){
 				case IMD:
 					if (line->cmd != CMP) {
 						error(sprintf(error_message, INELIGIBLE_ARGUMENTS_TYPE));
@@ -87,38 +81,34 @@ static bool handleLine2(input_line* line) {
 				case JWP:
 				default:
 					return false;
+			}
 
-			} /*end of switch that referse to 2 arguments*/
-
-			addCmd(ABS, destAdders, srcAdders, line->cmd, IRELEVANT_BITS, IRELEVANT_BITS);
-			if (destAdders == REG && (srcAdders == REG )) {
+			addCmd(ABS, dest_addres, src_addres, line->cmd, IRELEVANT_BITS, IRELEVANT_BITS);
+			if (dest_addres == REG && (src_addres == REG )) {
 				word multiReg;
-				multiReg.reg.destOperand = destArg.reg.destOperand;
-				multiReg.reg.srcOperand = srcArg.reg.srcOperand;
+				multiReg.reg.destOperand = dest_arg.reg.destOperand;
+				multiReg.reg.srcOperand = src_arg.reg.srcOperand;
 				multiReg.reg.decode = ABS;
 				addArg(multiReg);
 			} else {
-				if (srcAdders == DIR && srcArg.num.value == 0) {/* If the arg is external */
-					if (!addExt(line->args[0], getCmdLength() + 1)) {
+				if (src_addres == DIR && src_arg.num.value == 0){
+					if (!addExt(line->args[0], getCmdLength() + 1)){
 						return false;
 					}
 				}
-				addArg(srcArg);
-				if (destAdders == DIR && destArg.num.value == 0) {/* If the arg is external */
-					if (!addExt(line->args[1], getCmdLength() + 1)) {
+				addArg(src_arg);
+				if (dest_addres == DIR && dest_arg.num.value == 0){
+					if (!addExt(line->args[1], getCmdLength() + 1)){
 						return false;
 					}
 				}
-				addArg(destArg);
+				addArg(dest_arg);
 			}
 		} else {
 			error(sprintf(error_message, INELIGIBLE_ARGUMENT_COUNT));
 			return false;
-			/* Expected 2 arg error */
 		}
 		break;
-
-	/* One operands group */
 
 	case NOT:
 	case CLR:
@@ -129,12 +119,12 @@ static bool handleLine2(input_line* line) {
 		argslabel = line-> args[0];
 			args2 = line -> args[1];
 			args3 = line -> args[2];
-			if (line->args != NULL && line->args[1] == NULL) { /* Only one arg*/
-			addressing adders; /*can be 0,1,2,3*/
+			if (line->args != NULL && line->args[1] == NULL){
+			addressing adders;
 			word arg;
-			switch (adders = getArgWord(line->args[0], &arg)) {
+			switch (adders = getArgWord(line->args[0], &arg)){
 			case IMD:
-				if (line->cmd != PRN) {
+				if (line->cmd != PRN){
 					error(sprintf(error_message, INELIGIBLE_ARGUMENTS_TYPE));
 					return false;
 					break;
@@ -142,21 +132,20 @@ static bool handleLine2(input_line* line) {
 			case DIR:
 			case REG:
 				addCmd(ABS, adders, IMD, line->cmd, IRELEVANT_BITS, IRELEVANT_BITS);
-				if (adders == DIR && arg.num.value == 0) {/* If the arg is external */
-					if (!addExt(line->args[0], getCmdLength() + 1)) {
+				if (adders == DIR && arg.num.value == 0){
+					if (!addExt(line->args[0], getCmdLength() + 1)){
 						return false;
 					}
 				}
 				addArg(arg);
 				break;
-			case JWP:   /* this case invalide syntex one operator jump in addressing 2  */
+			case JWP:
 			default:
 				return false;
 			}
 		} else {
 			error(sprintf(error_message, INELIGIBLE_ARGUMENT_COUNT));
 			return false;
-			/* Expected 1 arg error */
 				break;
 		}
 		break;
@@ -167,11 +156,11 @@ static bool handleLine2(input_line* line) {
 		if (line->args != NULL && line->args[1] == NULL){
 			addressing addres;
 			word arg;
-			switch (addres = getArgWord(line->args[0], &arg)) { /* addres must be DIR because "getline()" test the formmat for the JWP lines */
+			switch (addres = getArgWord(line->args[0], &arg)){
 				case DIR:
 				case REG:
 					addCmd(ABS, addres, IMD, line->cmd, IRELEVANT_BITS, IRELEVANT_BITS);
-					if (addres == DIR && arg.num.value == 0) {/* If the arg is external */
+					if (addres == DIR && arg.num.value == 0) {
 						if (!addExt(line->args[0], getCmdLength() + 1)) {
 							return false;
 						}
@@ -179,61 +168,56 @@ static bool handleLine2(input_line* line) {
 					addArg(arg);
 					break;
 				case IMD:
-				case JWP: /* jump commands with only one param cant be JWP */
+				case JWP:
 				default:
 					return false;
 					break;
 			}
 		} else if(line->args != NULL && line->args[1] != NULL && line->args[2] != NULL){
-			addressing addresArgZero, addresArgOne, addresArgTwo ;
+			addressing addresArgZero, addresArgOne, addresArgTwo ;       /* TODO change addresArg...*/
 			word argZero, argOne, argTwo ;
-
-			addresArgZero = getArgWord(line->args[0], &argZero); /* put the command word into argZero */
-
-			addresArgZero = JWP;  /* the logic that lead till here means that the addressing is jump with two params  */
+			addresArgZero = getArgWord(line->args[0], &argZero);
+			addresArgZero = JWP;
 			addresArgOne = getArgWord(line->args[1], &argOne);
 			addresArgTwo = getArgWord(line->args[2], &argTwo);
 
 			addCmd(ABS, addresArgZero, IMD, line->cmd, addresArgOne, addresArgTwo);
-			if ( argZero.num.value == 0 ) { /* argZero is a label, so i want to check If the arg is external */
+			if ( argZero.num.value == 0 ){
 				if (!addExt(line->args[0], getCmdLength() + 1)) {
 					return false;
 				}
 			}
 			addArg(argZero);
-
-			if (addresArgOne == REG && (addresArgTwo == REG )) {
+			if (addresArgOne == REG && (addresArgTwo == REG )){
 				word multiReg;
 				multiReg.reg.destOperand = argTwo.reg.destOperand;
 				multiReg.reg.srcOperand = argOne.reg.srcOperand;
 				multiReg.reg.decode = ABS;
 				addArg(multiReg);
 			} else {
-				if ( argOne.num.value == 0 ) { /* argOne is a label, so i want to check If the arg is external */
-					if (!addExt(line->args[1], getCmdLength() + 1 )) {
+				if ( argOne.num.value == 0 ){
+					if (!addExt(line->args[1], getCmdLength() + 1 )){
 						return false;
 					}
 				}
 				addArg(argOne);
 
-				if ( argTwo.num.value == 0 ) { /* argTwo is a label, so i want to check If the arg is external */
-					if (!addExt(line->args[2], getCmdLength() + 1 )) {
+				if ( argTwo.num.value == 0 ){
+					if (!addExt(line->args[2], getCmdLength() + 1 )){
 						return false;
 					}
 				}
 				addArg(argTwo);
-
 			}
-
 		} else {
 			error(sprintf(error_message, INELIGIBLE_ARGUMENT_COUNT));
 			return false;
-		}/*end of JWP (one or three operands) group*/
+		}
 			break;
-	/* No operands group */
+
 	case RTS:
 	case STOP:
-		if (line->args == NULL) { /*no args*/
+		if (line->args == NULL) {
 			addCmd(0, IMD, IMD, line->cmd, NO_ARGS, 0);
 		} else {
 			error(sprintf(error_message, INELIGIBLE_ARGUMENT_COUNT));
@@ -257,38 +241,35 @@ static bool handleLine2(input_line* line) {
 	case DOT_DATA:
 	case DOT_STRING:
 	case DOT_EXTERN:
-		/* do nothing */
 		break;
 	default:
-		/* Not a command error. Probably impossible to reach. */
 		error(sprintf(error_message, UNKNOWN_ERROR));
 		return false;
 		break;
 	}
 
     return true;
-}/* End handleLine2 */
+}
 
-
-static addressing getArgWord(const char *str, word *wrd) { /*wrd is srcArg or desrArg*/
+static addressing getArgWord(const char *str, word *wrd){
 	int num;
 	label *lbl;
 
-	if (str[0] == IMD_FLAG) {/* Is immediate number */
+	if (str[0] == IMD_FLAG) {                    					/*TODO change IMD_FLAG*/
 		if (!string_to_int(str + 1, &num)) {
 			error(sprintf(error_message, SYNTAX_ERROR UNKNOWN_ARGUMENT_TYPE));
 			return -1;
 		}
 		wrd->num.decode = ABS;
-		wrd->num.value =  num % (int) pow(2, VALUE_SIZE);  /* modulo on binary number remains only the less significant digits */
+		wrd->num.value =  num % (int) pow(2, VALUE_SIZE);
 		return IMD;
-	} else if (valid_register(str)) {/* Is register name */
+	} else if (valid_register(str)){
 		wrd->reg.decode = ABS;
-		wrd->reg.destOperand = str[1] - '0'; /*r3  = str[1] - '0' = 3, gives the number of register*/
+		wrd->reg.destOperand = str[1] - '0';
 		wrd->reg.srcOperand = 0;
 		return REG;
-	} else if (valid_label(str)) {/* Is label name */
-		if (!(lbl = getLabel(str))) { /*getting the label from symbol list list*/
+	} else if (valid_label(str)){
+		if (!(lbl = getLabel(str))){
 			error(sprintf(error_message, UNKNOWN_LABEL, str));
 			return -1;
 		}
@@ -296,6 +277,6 @@ static addressing getArgWord(const char *str, word *wrd) { /*wrd is srcArg or de
 		wrd->num.decode = lbl->isExt ? EXT : RLC;
 		return DIR;
 	}
-	error(sprintf(error_message, SYNTAX_ERROR INVALID_ARGUMENT, str));/* Syntax error */
+	error(sprintf(error_message, SYNTAX_ERROR INVALID_ARGUMENT, str));
 	return -1;
 }
