@@ -13,9 +13,9 @@ typedef struct {
 
 bool add_label(char *label_name, int address, bool is_extern, bool isOp);
 label *getLabel(const char *name);
-bool addExt(char *name, int address);
+bool add_external(char *name, int address);
 char *popExt(int *address);
-bool addEnt(label *lbl);
+bool addEnt(label *label_pointer);
 char *popEnt(int *address);
 
 #endif

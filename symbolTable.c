@@ -45,8 +45,13 @@ bool add_label(char *label_name, int address, bool is_extern, bool isOp){
 	return true;
 }
 
-/* Register an external flag in a list */
-bool addExt(char *symbol, int address) {
+/**
+ * Function add to the external table the label
+ * @param address
+ * @param symbol
+ * @returns true while successfully added
+ * */
+bool add_external(char *symbol, int address){
 	externNode *node = ext_list.head;
 
 	if (!node && !(node = malloc(sizeof(node)))) {
@@ -54,7 +59,7 @@ bool addExt(char *symbol, int address) {
 		return false;
 	}
 	if (ext_list.head != NULL) {
-		while (node->next)/* Skip to the end */
+		while (node->next)
 			node = node->next;
 		if (!(node->next = malloc(sizeof(node)))) {
 			error(sprintf(error_message, OUT_OF_MEMORY));
@@ -68,10 +73,15 @@ bool addExt(char *symbol, int address) {
 	node->this.address = address + MEMORY_START;
 	node->next = NULL;
 	return true;
-} /* End addExt */
+}
 
-/* Register an external flag in a list */
-bool addEnt(label *lbl) {
+/**
+ * Function add to the entries table the label
+ * @param address
+ * @param symbol
+ * @returns true while successfully added
+ * */
+bool addEnt(label *label_pointer){
 	entryNode *node = ent_list.head;
 
 	if (!node && !(node = malloc(sizeof(node)))) {
@@ -79,7 +89,7 @@ bool addEnt(label *lbl) {
 		return false;
 	}
 	if (ent_list.head != NULL) {
-		while (node->next)/* Skip to the end */
+		while (node->next)
 			node = node->next;
 		if (!(node->next = malloc(sizeof(node)))) {
 			error(sprintf(error_message, OUT_OF_MEMORY));
@@ -89,13 +99,17 @@ bool addEnt(label *lbl) {
 	} else {
 		ent_list.head = node;
 	}
-	node->this.label_name = lbl->label_name;
-	node->this.address = lbl->address;
+	node->this.label_name = label_pointer->label_name;
+	node->this.address = label_pointer->address;
 	node->next = NULL;
 	return true;
-} /* End addEnt */
+}
 
-/* Pops an extern reference and removes it from the list */
+/**
+ * Function removes reference from the external list, and pop it out
+ * @param address, to pop
+ * @returns label_name
+ * */
 char *popExt(int *address) {
 	externNode *node = ext_list.head;
 	char *label_name;
@@ -106,9 +120,13 @@ char *popExt(int *address) {
 	label_name = node->this.label_name;
 	free(node);
 	return label_name;
-} /* End popExt */
+}
 
-/* Pops an extern reference and removes it from the list */
+/**
+ * Function removes reference from the entries list, and pop it out
+ * @param address, to pop
+ * @returns label_name
+ * */
 char *popEnt(int *address) {
 	entryNode *node = ent_list.head;
 	char *label_name;
@@ -119,9 +137,12 @@ char *popEnt(int *address) {
 	label_name = node->this.label_name;
 	free(node);
 	return label_name;
-} /* End popEnt */
+}
 
-/* Fix all relocatable */
+/**
+ * Function sorting out the addressing with padding
+ * @param spacing, number of spaces the function works from the 100nth char
+ * */
 void relocate(int spacing) {
 	labelNode *node = symbol_list.head;
 	if (node) {
@@ -131,57 +152,23 @@ void relocate(int spacing) {
 			}
 		} while ((node = node->next));
 	}
-}/* End relocate */
+}
 
-
-/* Searches the symbol table for the name given */
-bool findLabel(const char *name) {
-	return getLabel(name) ? true : false;
-}/* End firstLabel */
-
-/* Returns the requested label to the user. NULL if does not exist */
+/**
+ * function find the required label
+ * @param name, name of required label
+ * @return the reuired label
+ * */
 label *getLabel(const char *name) {
 	labelNode *node = symbol_list.head;
 	do {
-		if (strcmp(node->this->label_name, name) == 0) /*runs throw the list and finding label*/
+		if (strcmp(node->this->label_name, name) == 0)
 			return node->this;
 	} while ((node = node->next) != NULL);
 	return NULL;
-}/* End getLabel */
+}
 
-/* Free all the elements in the symbol table */
-void freeSymbolTable(void) {
-	labelNode *node = symbol_list.head;
-	if (node != NULL) {
-		do {
-			symbol_list.head = node->next;
-			free(node->this->label_name);
-			free(node->this);
-			free(node);
-		} while ((node = node->next) != NULL);
-		symbol_list.head = NULL;
-	}
-}/* End freeSymbolTable */
 
-void printSymbolTable(void) {/* Debug only. */
-	labelNode *node = symbol_list.head;
-	printf("%s\t\t%s\t\t%s\t%s\n", "Label", "Address", "is_extern", "is_operator");
-	if (node) {
-		do {
-			printf("%s\t\t%s\t\t%d\t\t%d\n", node->this->label_name,
-				   change_base_2_weird(node->this->address), node->this->is_extern,
-					node->this->is_operator);
-		} while ((node = node->next) != NULL);
-	}
-
-}/* End printSymbolTable */
-
-/* ~-~-~-~ PRIVATE FUNCTIONS ~-~-~-~ */
-
-/* Creates a label with a dynamic allocated storage
- *
- * @return NULL for errors.
- */
 static label *create_label(char *label_name, int address, bool is_extern, bool isOp) {
 	label *newLabel = malloc(sizeof(label));
 	if (newLabel == NULL) {
@@ -198,7 +185,7 @@ static label *create_label(char *label_name, int address, bool is_extern, bool i
 	newLabel->is_extern = is_extern;
 	newLabel->is_operator = isOp;
 	return newLabel;
-}/* End create_label */
+}
 
 /* Creates a label node with a dynamic allocated storage
  *
@@ -218,4 +205,4 @@ static labelNode *create_label_node(label *this, labelNode *next) {
 	newLabelNode->this = this;
 	newLabelNode->next = next;
 	return newLabelNode;
-}/* End create_label_node */
+}

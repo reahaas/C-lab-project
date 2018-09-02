@@ -99,13 +99,13 @@ static bool analyze_line2(input_line *line){
 				add_argument(multiReg);
 			} else {
 				if (src_addres == DIR && src_arg.num.value == 0){
-					if (!addExt(line->args[0], get_cmd_length() + 1)){
+					if (!add_external(line->args[0], get_cmd_length() + 1)){
 						return false;
 					}
 				}
 				add_argument(src_arg);
 				if (dest_addres == DIR && dest_arg.num.value == 0){
-					if (!addExt(line->args[1], get_cmd_length() + 1)){
+					if (!add_external(line->args[1], get_cmd_length() + 1)){
 						return false;
 					}
 				}
@@ -137,7 +137,7 @@ static bool analyze_line2(input_line *line){
 			case REG:
 				add_cmd(ABS, adders, IMD, line->cmd, NONE, NONE);
 				if (adders == DIR && arg.num.value == 0){
-					if (!addExt(line->args[0], get_cmd_length() + 1)){
+					if (!add_external(line->args[0], get_cmd_length() + 1)){
 						return false;
 					}
 				}
@@ -165,7 +165,7 @@ static bool analyze_line2(input_line *line){
 				case REG:
 					add_cmd(ABS, addres, IMD, line->cmd, NONE, NONE);
 					if (addres == DIR && arg.num.value == 0) {
-						if (!addExt(line->args[0], get_cmd_length() + 1)) {
+						if (!add_external(line->args[0], get_cmd_length() + 1)) {
 							return false;
 						}
 					}
@@ -186,7 +186,7 @@ static bool analyze_line2(input_line *line){
 
 			add_cmd(ABS, address_argument0, IMD, line->cmd, address_argument1, address_argument2);
 			if ( argument0.num.value == 0 ){
-				if (!addExt(line->args[0], get_cmd_length() + 1)) {
+				if (!add_external(line->args[0], get_cmd_length() + 1)) {
 					return false;
 				}
 			}
@@ -199,14 +199,14 @@ static bool analyze_line2(input_line *line){
 				add_argument(multi_registers);
 			} else {
 				if ( argument1.num.value == 0 ){
-					if (!addExt(line->args[1], get_cmd_length() + 1 )){
+					if (!add_external(line->args[1], get_cmd_length() + 1)){
 						return false;
 					}
 				}
 				add_argument(argument1);
 
 				if ( argument2.num.value == 0 ){
-					if (!addExt(line->args[2], get_cmd_length() + 1 )){
+					if (!add_external(line->args[2], get_cmd_length() + 1)){
 						return false;
 					}
 				}
@@ -254,7 +254,7 @@ static bool analyze_line2(input_line *line){
 
 static addressing get_word_for_argument(const char *str, word *wrd){
 	int num;
-	label *lbl;
+	label *label_pointer;
 
 	if (str[0] == IMMEDIATE_FLAG){
 		if (!string_to_int(str + 1, &num)) {
@@ -270,12 +270,12 @@ static addressing get_word_for_argument(const char *str, word *wrd){
 		wrd->reg.srcOperand = 0;
 		return REG;
 	} else if (valid_label(str)){
-		if (!(lbl = getLabel(str))){
+		if (!(label_pointer = getLabel(str))){
 			error(sprintf(error_message, UNKNOWN_LABEL, str));
 			return -1;
 		}
-		wrd->num.value = lbl->address;
-		wrd->num.decode = lbl->is_extern ? EXT : RLC;
+		wrd->num.value = label_pointer->address;
+		wrd->num.decode = label_pointer->is_extern ? EXT : RLC;
 		return DIR;
 	}
 	error(sprintf(error_message, SYNTAX_ERROR INVALID_ARGUMENT, str));
