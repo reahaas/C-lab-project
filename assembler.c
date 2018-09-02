@@ -254,7 +254,7 @@ bool valid_label(const char *label_str){
 }
 
 bool valid_register(const char *string_register){
-	return ((string_register[0] == REG_FLAG && '0' <= string_register[1] && string_register[1] <= '7'	&& string_register[2] == '\0') ? true : false);
+	return ((string_register[0] == REGISTER_FLAG && '0' <= string_register[1] && string_register[1] <= '7'	&& string_register[2] == '\0') ? true : false);
 }
 
 

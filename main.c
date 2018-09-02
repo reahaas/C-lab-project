@@ -20,12 +20,12 @@ int main(int argc, char* argv[]) {
 	} else {
 		for (i = 1; i < argc; i++) {
 			cur_file_name = malloc(strlen(argv[i]) + EXTENSION_LENGTH + 1);
-			sprintf(cur_file_name, "%s%s", argv[i], INPUT_EXTENSION);
+			sprintf(cur_file_name, "%s%s", argv[i], AS_EXTENSION);
 			if ((fd = fopen(cur_file_name, "r")) != NULL) {
 				if (assembler(fd) == ASSEMBLER_FAILURE) {
-					fprintf(stderr, ASSEMBLER_ERROR, argv[i], INPUT_EXTENSION);
+					fprintf(stderr, ASSEMBLER_ERROR, argv[i], AS_EXTENSION);
 				}else{
-					fprintf(stdout, ASSEMBLER_DONE, argv[i], INPUT_EXTENSION);
+					fprintf(stdout, ASSEMBLER_DONE, argv[i], AS_EXTENSION);
 				}
 				fclose(fd);
 			} else {

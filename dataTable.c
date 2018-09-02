@@ -4,32 +4,34 @@
 #include "math.h"
 #include "converter.h"
 
-/*############STATIC VARIABLES#############*/
 dataList data_list = { NULL, 0 };
-/*############PRIVATE FUNCTIONS#############*/
-/* Creates a data node with a dynamic allocated storage */
-static dataNode* createDataNode(int data) {
-	dataNode* newDataNode = NULL;
-	if ((newDataNode = malloc(sizeof(dataNode)))) {
-		newDataNode->value = data;
-		newDataNode->next = NULL;
+
+/**
+ *@param data, after organized
+ * @returns new_data_node, after added
+ * */
+static dataNode* create_data_node(int data) {
+	dataNode* new_data_node = NULL;
+	if ((new_data_node = malloc(sizeof(dataNode)))) {
+		new_data_node->value = data;
+		new_data_node->next = NULL;
 	}
 
-	return newDataNode;
+	return new_data_node;
 }
 
-/*############PUBLIC FUNCTIONS#############*/
-
-/*  Adds data (char or int) to data list */
+/**
+ * @param data, the data (char or int)
+ * @returns true while successful adding occurs, false otherwise
+ * */
 int addData(unsigned int data) {
 	dataNode *curr, *newNode;
 	data_list.length++;
-	if ((newNode = createDataNode(data % (int) pow(2, WORD_SIZE)))
+	if ((newNode = create_data_node(data % (int) pow(2, WORD_SIZE)))
 			&& cmd_list.length + data_list.length < MAX_MEMORY_SIZE) {
 		if (data_list.head == NULL) { /*list is empty*/
 			data_list.head = newNode;
 		} else {
-			/* Skip to the end of the list */
 			for (curr = data_list.head; curr->next != NULL; curr = curr->next)
 				;
 			curr->next = newNode;
@@ -37,21 +39,4 @@ int addData(unsigned int data) {
 		return true;
 	}
 	return false;
-}
-/* reset table */
-void resetDataTable(void) {
-	dataNode* curr = NULL;
-	data_list.length = 0;
-	while ((curr = data_list.head) != NULL) { /* set curr to head, stop if list empty. */
-		data_list.head = data_list.head->next; /* advance head to next element. */
-		free(curr); /* delete saved pointer. */
-	}
-}
-/* print table */
-void printDataTable(int lineNumber) {
-	dataNode* curr = NULL;
-	for (curr = data_list.head; curr != NULL; curr = curr->next, lineNumber++) {
-		printf("%s\t%s\n", valueToBase10DecimalString(lineNumber),
-			   base10to2Wierd(curr->value));
-	}
 }

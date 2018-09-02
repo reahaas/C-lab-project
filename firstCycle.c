@@ -89,7 +89,7 @@ static bool handleLine(input_line* line) {
                 return false;
             }
         }
-        increaseCmdLength(++wordCounter); /* Count number of rows in cmd table*/
+            increase_cmd_length(++wordCounter); /* Count number of rows in cmd table*/
         break;
     /* jump operands group, can have one operand or three. here i assuming that the syntax is good, handel at get line. */
     case JMP:
@@ -115,7 +115,7 @@ static bool handleLine(input_line* line) {
                 return false;
             }
         }
-        increaseCmdLength(++wordCounter); /* Count number of rows in cmd table*/
+            increase_cmd_length(++wordCounter); /* Count number of rows in cmd table*/
         break;
 
     case DOT_DATA:

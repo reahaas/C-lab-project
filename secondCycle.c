@@ -82,26 +82,26 @@ static bool handleLine2(input_line* line) {
 					return false;
 			}
 
-			addCmd(ABS, dest_addres, src_addres, line->cmd, NONE, NONE);
+			add_cmd(ABS, dest_addres, src_addres, line->cmd, NONE, NONE);
 			if (dest_addres == REG && (src_addres == REG )) {
 				word multiReg;
 				multiReg.reg.destOperand = dest_arg.reg.destOperand;
 				multiReg.reg.srcOperand = src_arg.reg.srcOperand;
 				multiReg.reg.decode = ABS;
-				addArg(multiReg);
+				add_argument(multiReg);
 			} else {
 				if (src_addres == DIR && src_arg.num.value == 0){
-					if (!addExt(line->args[0], getCmdLength() + 1)){
+					if (!addExt(line->args[0], get_cmd_length() + 1)){
 						return false;
 					}
 				}
-				addArg(src_arg);
+				add_argument(src_arg);
 				if (dest_addres == DIR && dest_arg.num.value == 0){
-					if (!addExt(line->args[1], getCmdLength() + 1)){
+					if (!addExt(line->args[1], get_cmd_length() + 1)){
 						return false;
 					}
 				}
-				addArg(dest_arg);
+				add_argument(dest_arg);
 			}
 		} else {
 			error(sprintf(error_message, INELIGIBLE_ARGUMENT_COUNT));
@@ -127,13 +127,13 @@ static bool handleLine2(input_line* line) {
 				}
 			case DIR:
 			case REG:
-				addCmd(ABS, adders, IMD, line->cmd, NONE, NONE);
+				add_cmd(ABS, adders, IMD, line->cmd, NONE, NONE);
 				if (adders == DIR && arg.num.value == 0){
-					if (!addExt(line->args[0], getCmdLength() + 1)){
+					if (!addExt(line->args[0], get_cmd_length() + 1)){
 						return false;
 					}
 				}
-				addArg(arg);
+					add_argument(arg);
 				break;
 			case JWP:
 			default:
@@ -155,13 +155,13 @@ static bool handleLine2(input_line* line) {
 			switch (addres = getArgWord(line->args[0], &arg)){
 				case DIR:
 				case REG:
-					addCmd(ABS, addres, IMD, line->cmd, NONE, NONE);
+					add_cmd(ABS, addres, IMD, line->cmd, NONE, NONE);
 					if (addres == DIR && arg.num.value == 0) {
-						if (!addExt(line->args[0], getCmdLength() + 1)) {
+						if (!addExt(line->args[0], get_cmd_length() + 1)) {
 							return false;
 						}
 					}
-					addArg(arg);
+					add_argument(arg);
 					break;
 				case IMD:
 				case JWP:
@@ -177,33 +177,33 @@ static bool handleLine2(input_line* line) {
 			addresArgOne = getArgWord(line->args[1], &argOne);
 			addresArgTwo = getArgWord(line->args[2], &argTwo);
 
-			addCmd(ABS, addresArgZero, IMD, line->cmd, addresArgOne, addresArgTwo);
+			add_cmd(ABS, addresArgZero, IMD, line->cmd, addresArgOne, addresArgTwo);
 			if ( argZero.num.value == 0 ){
-				if (!addExt(line->args[0], getCmdLength() + 1)) {
+				if (!addExt(line->args[0], get_cmd_length() + 1)) {
 					return false;
 				}
 			}
-			addArg(argZero);
+			add_argument(argZero);
 			if (addresArgOne == REG && (addresArgTwo == REG )){
 				word multiReg;
 				multiReg.reg.destOperand = argTwo.reg.destOperand;
 				multiReg.reg.srcOperand = argOne.reg.srcOperand;
 				multiReg.reg.decode = ABS;
-				addArg(multiReg);
+				add_argument(multiReg);
 			} else {
 				if ( argOne.num.value == 0 ){
-					if (!addExt(line->args[1], getCmdLength() + 1 )){
+					if (!addExt(line->args[1], get_cmd_length() + 1 )){
 						return false;
 					}
 				}
-				addArg(argOne);
+				add_argument(argOne);
 
 				if ( argTwo.num.value == 0 ){
-					if (!addExt(line->args[2], getCmdLength() + 1 )){
+					if (!addExt(line->args[2], get_cmd_length() + 1 )){
 						return false;
 					}
 				}
-				addArg(argTwo);
+				add_argument(argTwo);
 			}
 		} else {
 			error(sprintf(error_message, INELIGIBLE_ARGUMENT_COUNT));
@@ -214,7 +214,7 @@ static bool handleLine2(input_line* line) {
 	case RTS:
 	case STOP:
 		if (line->args == NULL) {
-			addCmd(0, IMD, IMD, line->cmd, NONE, 0);
+			add_cmd(0, IMD, IMD, line->cmd, NONE, 0);
 		} else {
 			error(sprintf(error_message, INELIGIBLE_ARGUMENT_COUNT));
 			return false;

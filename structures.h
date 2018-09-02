@@ -25,8 +25,8 @@ typedef struct {/*n000000000000 dc00*/
 
 typedef struct { /*r1000000 r2000000 dc00*/
 	unsigned int decode 	: DECODE_SIZE;
-	unsigned int destOperand: RED_OPERAND_SIZE;
-	unsigned int srcOperand : RED_OPERAND_SIZE;
+	unsigned int destOperand: REG_OPERAND_SIZE;
+	unsigned int srcOperand : REG_OPERAND_SIZE;
 } reg_word;
 
 typedef union {/*can choose one of them*/

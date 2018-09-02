@@ -1,44 +1,34 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#define NONE 0
 #define MAX_MEMORY_SIZE 1000
 #define MEMORY_START 100
 #define MAXIMUM_LINE_LENGTH 81
 #define MAX_ARG_COUNT ((MAXIMUM_LINE_LENGTH - 3)/2 + 1)
-#define DECODE_SIZE 2
-#define OPERAND_SIZE 2
-#define RED_OPERAND_SIZE 6
-#define OPCODE_SIZE 4
+#define REG_OPERAND_SIZE 6
 #define PARAM_SIZE 2
 #define VALUE_SIZE 12
-#define NONE 0
-#define OPCODES_AMOUNT 16
 #define WORD_SIZE 14
 #define EXTENSION_LENGTH 4
-#define INPUT_EXTENSION ".as"
-#define OBJ_EXT ".ob"
-#define EXT_EXT ".ext"
-#define ENT_EXT ".ent"
+#define AS_EXTENSION ".as"
+#define OB_EXTENSION ".ob"
+#define EXT_EXTENSION ".ext"
+#define ENT_EXTENSION ".ent"
 #define THREE_OPERANDS 3
+#define OPCODE_SIZE 4
+#define OPCODES_AMOUNT 16
+#define DECODE_SIZE 2
+#define OPERAND_SIZE 2
 
-/*
- *	The three types of encode:
- *	absolute, external and relocatable.
- */
 enum ENCODE {
 	ABS = 0, EXT, RLC
 };
-/*
- * For addressing there are three types:
- * immediate, direct, jump-with-params and direct-register.
- */
+
 typedef enum ADDRESSING {
 	IMD = 0, DIR, JWP, REG
 } addressing;
 
-
-
-/* Opcodes enum table */
 typedef enum {
 	MOV,
 	CMP,
@@ -62,12 +52,11 @@ typedef enum {
 	DOT_DATA = OPCODES_AMOUNT, DOT_STRING, DOT_ENTRY, DOT_EXTERN
 } inst_type;
 
-/* Definition for all signs */
 #define NEWLINE '\n'
 #define COMMENT_SIGN ';'
 #define COLON ':'
 #define QUOTATION_MARK '"'
-#define REG_FLAG 'r'
+#define REGISTER_FLAG 'r'
 #define IMMEDIATE_FLAG '#'
 #define COMMA ','
 #define SPACE ' '

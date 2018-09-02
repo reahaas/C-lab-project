@@ -5,69 +5,63 @@
 #include "symbolStructs.h"
 #include <string.h>
 
-/* Prototypes */
-static bool saveObj(FILE *file, int *i);
-static bool saveData(FILE *file, int *i);
-static bool saveExt(FILE *file, int *i);
-static bool saveEnt(FILE *file, int *i);
+static bool save_object(FILE *file, int *i);
+static bool save_data(FILE *file, int *i);
+static bool save_external(FILE *file, int *i);
+static bool save_entries(FILE *file, int *i);
 
-/* Saves the files for successful assembling */
-void saveFiles(void) {
+void saveFiles(void){
 	char *name;
 	FILE *out;
-	bool keep;
+	bool result;
 	int i = MEMORY_START;
-
 	copy_string(&name, cur_file_name);
-
 	name[strlen(name) - EXTENSION_LENGTH + 1] = '\0';
-	strcat(name, OBJ_EXT);
+	strcat(name, OB_EXTENSION);
 	out = fopen(name, "w");
-	keep = saveObj(out, &i);
+	result = save_object(out, &i);
 	fclose(out);
-	if (!keep)
+	if (!result)
 		remove(name);
-
 	name[strlen(name) - EXTENSION_LENGTH + 1] = '\0';
-	strcat(name, EXT_EXT);
-
+	strcat(name, EXT_EXTENSION);
 	out = fopen(name, "w");
-	keep = saveExt(out, &i);
+	result = save_external(out, &i);
 	fclose(out);
-	if (!keep)
+	if (!result)
 		remove(name);
 
 	name[strlen(name) - EXTENSION_LENGTH] = '\0';
-	strcat(name, ENT_EXT);
+	strcat(name, ENT_EXTENSION);
 	out = fopen(name, "w");
-	keep = saveEnt(out, &i);
+	result = save_entries(out, &i);
 	fclose(out);
-	if (!keep)
+	if (!result)
 		remove(name);
+
 	free(name);
 }
 
-/* Saves commands to the file */
-static bool saveObj(FILE *file, int *i) {
+static bool save_object(FILE *file, int *i){
 	cmdNode* cmd_node = NULL;
-	int start = *i, cmdAmount = 0;
+	int start = *i, cmd_amount = 0;
 	cmd_node = cmd_list.head;
 	if (cmd_node != NULL) {
-		while (cmd_node != NULL) { /* Get the length because the .length is not actually the length but the address by now */
+		while (cmd_node != NULL){
 			cmd_node = cmd_node->next;
-			cmdAmount++;
+			cmd_amount++;
 		}
 	}
-	fprintf(file, "%s\t%s\n", valueToBase10DecimalString(cmdAmount),
-			valueToBase10DecimalString(data_list.length));
-	printf("%s\t%s\n", valueToBase10DecimalString(cmdAmount),
-			valueToBase10DecimalString(data_list.length));
+	fprintf(file, "%s\t%s\n", print_value_in_string(cmd_amount),
+			print_value_in_string(data_list.length));
+	printf("%s\t%s\n", print_value_in_string(cmd_amount),
+		   print_value_in_string(data_list.length));
 	for (cmd_node = cmd_list.head; cmd_node != NULL;
 			cmd_node = cmd_node->next, (*i)++) {
-		fprintf(file, "%s\t%s\n", valueToBase10DecimalString(*i),
-				base10to2Wierd(cmd_node->value.print));
+		fprintf(file, "%s\t%s\n", print_value_in_string(*i),
+				change_base_2_weird(cmd_node->value.print));
 	}
-	if (saveData(file, i))
+	if (save_data(file, i))
 		return true;
 
 	if (start == *i)
@@ -76,17 +70,17 @@ static bool saveObj(FILE *file, int *i) {
 		return true;
 }
 
-/* Saves data to the file */
-bool saveData(FILE *file, int *i) {
+
+bool save_data(FILE *file, int *i){
 	dataNode* data_node = NULL;
 	int start = *i;
 
 	for (data_node = data_list.head; data_node != NULL;
 			data_node = data_node->next, (*i)++) {
-		fprintf(file, "%s\t%s\n", valueToBase10DecimalString(*i),
-				base10to2Wierd(data_node->value));
-		printf("%s\t%s\n", valueToBase10DecimalString(*i),
-				base10to2Wierd(data_node->value));
+		fprintf(file, "%s\t%s\n", print_value_in_string(*i),
+				change_base_2_weird(data_node->value));
+		printf("%s\t%s\n", print_value_in_string(*i),
+			   change_base_2_weird(data_node->value));
 	}
 	if (start == *i)
 		return false;
@@ -94,31 +88,31 @@ bool saveData(FILE *file, int *i) {
 		return true;
 }
 
-/* Saves externals to the file */
-bool saveExt(FILE *file, int *i) {
+
+bool save_external(FILE *file, int *i) {
 	char *name;
 	int num;
-	bool hasContent = false;
+	bool has_content = false;
 
 	while ((name = popExt(&num))) {
-		fprintf(file, "%s\t%s\n", name, valueToBase10DecimalString(num));
-		printf("%s\t%s\n", name, valueToBase10DecimalString(num));
+		fprintf(file, "%s\t%s\n", name, print_value_in_string(num));
+		printf("%s\t%s\n", name, print_value_in_string(num));
 		free(name);
-		hasContent = true;
+		has_content = true;
 	}
-	return hasContent;
+	return has_content;
 }
 
-/* Saves entries to the file */
-bool saveEnt(FILE *file, int *i) {
+
+bool save_entries(FILE *file, int *i){
 	char *name;
 	int num;
-	bool hasContent = false;
+	bool has_content = false;
 
 	while ((name = popEnt(&num))) {
-		fprintf(file, "%s\t%s\n", name, valueToBase10DecimalString(num));
-		printf("%s\t%s\n", name, valueToBase10DecimalString(num));
-		hasContent = true;
+		fprintf(file, "%s\t%s\n", name, print_value_in_string(num));
+		printf("%s\t%s\n", name, print_value_in_string(num));
+		has_content = true;
 	}
-	return hasContent;
+	return has_content;
 }

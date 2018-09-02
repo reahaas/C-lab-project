@@ -1,11 +1,7 @@
-/*
- * converter.h
- */
-
 #ifndef CONVERTER_H
 #define CONVERTER_H
 
-char * base10to2Wierd(long unsigned int value);
-char *valueToBase10DecimalString(long unsigned int value);
+char * change_base_2_weird(long unsigned int value);
+char *print_value_in_string(long unsigned int value);
 
 #endif

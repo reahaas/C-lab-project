@@ -180,7 +180,7 @@ void printSymbolTable(void) {/* Debug only. */
 	if (node) {
 		do {
 			printf("%s\t\t%s\t\t%d\t\t%d\n", node->this->labelName,
-				   base10to2Wierd(node->this->address), node->this->isExt,
+				   change_base_2_weird(node->this->address), node->this->isExt,
 					node->this->isOp);
 		} while ((node = node->next) != NULL);
 	}
