@@ -10,21 +10,21 @@
 
 char *cur_file_name;
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[]){
 	int i;
 	FILE *fd;
-	srand(time(NULL)); /* seeds the random number generator used by the function rand */
-	if (argc < 2) {
+	srand(time(NULL));
+	if (argc < 2){
 		fprintf(stderr, FILES_SHORT);
 		return EXIT_FAILURE;
 	} else {
-		for (i = 1; i < argc; i++) {
+		for (i = 1; i < argc; i++){
 			cur_file_name = malloc(strlen(argv[i]) + EXTENSION_LENGTH + 1);
 			sprintf(cur_file_name, "%s%s", argv[i], AS_EXTENSION);
-			if ((fd = fopen(cur_file_name, "r")) != NULL) {
-				if (assembler(fd) == ASSEMBLER_FAILURE) {
+			if ((fd = fopen(cur_file_name, "r")) != NULL){
+				if (assembler(fd) == ASSEMBLER_FAILURE){
 					fprintf(stderr, ASSEMBLER_ERROR, argv[i], AS_EXTENSION);
-				}else{
+				} else {
 					fprintf(stdout, ASSEMBLER_DONE, argv[i], AS_EXTENSION);
 				}
 				fclose(fd);

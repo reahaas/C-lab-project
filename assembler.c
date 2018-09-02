@@ -2,11 +2,9 @@
 #include "errorStates.h"
 #include "string.h"
 
-/* External variables */
 FLAG flag;
 int string_index = 0;
 
-/* Prototypes */
 static bool get_next_argument(char *src, char *dest);
 static int get_operator(const char **ops, const char *str, int ops_amount);
 static int get_operator_valid(const char **ops, const char *str, const int ops_amount);

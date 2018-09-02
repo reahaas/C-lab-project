@@ -1,22 +1,17 @@
-/*
- * symbolTable.h
- */
-
 #ifndef SYMBOL_H
 #define SYMBOL_H
+#include <stdbool.h>
 
 
 typedef struct {
-	char *labelName;
+	char *label_name;
 	int address;
-	bool isExt;
-	bool isOp;
+	bool is_extern;
+	bool is_operator;
 } label;
 
 
-bool addLabel(char *labelName, int address, bool isExt, bool isOp);
-void printSymbolTable(void);/* This function is for debug only */
-void freeSymbolTable(void);
+bool add_label(char *label_name, int address, bool is_extern, bool isOp);
 label *getLabel(const char *name);
 bool addExt(char *name, int address);
 char *popExt(int *address);

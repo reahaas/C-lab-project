@@ -6,13 +6,18 @@
 #include "errorStates.h"
 #include <math.h>
 
-static bool handleLine2(input_line*);
-static addressing getArgWord(const char *str, word *wrd);
+static bool analyze_line2(input_line *);
+static addressing get_word_for_argument(const char *str, word *wrd);
 
+/**
+ * The second cycle function prepare the line for analyze2, look for error if exists
+ * @param src, the line
+ * @returns flag
+ * */
 FLAG secondCycle(FILE *src){
 	input_line *line;
 	int line_index;
-	fseek(src, 0L, SEEK_SET);                           /*TODO change seek_set*/
+	fseek(src, 0L, SEEK_SET);
 	relocate(cmd_list.length);
 	for (line_index = 1; true; line_index++){
 		if ((line = get_line(src))){
@@ -23,8 +28,8 @@ FLAG secondCycle(FILE *src){
 			if (line->unnecessary){
 				continue;
 			}
-			if (!handleLine2(line)){
-				if (cmd_list.length + data_list.length > MAX_MEMORY_SIZE) {
+			if (!analyze_line2(line)){
+				if (cmd_list.length + data_list.length > MAX_MEMORY_SIZE){
 					error(sprintf(error_message, OUT_OF_STORAGE));
 					report(line_index);
 					return flag;
@@ -39,9 +44,13 @@ FLAG secondCycle(FILE *src){
 	return flag;
 }
 
-static bool handleLine2(input_line* line) {
-
-	switch (line->cmd) {
+/**
+ * Analyze the line by using the addressing methods by cases
+ * @param line, the input line
+ * @returns true while line successfully analyze, false otherwise
+ * */
+static bool analyze_line2(input_line *line){
+	switch (line->cmd){
 	case MOV:
 	case CMP:
 	case ADD:
@@ -50,8 +59,7 @@ static bool handleLine2(input_line* line) {
 		if (line->args != NULL && line->args[1] != NULL && line->args[2] == NULL){
 			addressing src_addres, dest_addres;
 			word src_arg, dest_arg;
-
-			switch (src_addres = getArgWord(line->args[0], &src_arg)){
+			switch (src_addres = get_word_for_argument(line->args[0], &src_arg)){
 				case REG:
 					src_arg.reg.srcOperand = src_arg.reg.destOperand;
 					src_arg.reg.destOperand = 0;
@@ -68,7 +76,7 @@ static bool handleLine2(input_line* line) {
 					return false;
 			}
 
-			switch (dest_addres = getArgWord(line->args[1], &dest_arg)){
+			switch (dest_addres = get_word_for_argument(line->args[1], &dest_arg)){
 				case IMD:
 					if (line->cmd != CMP) {
 						error(sprintf(error_message, INELIGIBLE_ARGUMENTS_TYPE));
@@ -118,7 +126,7 @@ static bool handleLine2(input_line* line) {
 			if (line->args != NULL && line->args[1] == NULL){
 			addressing adders;
 			word arg;
-			switch (adders = getArgWord(line->args[0], &arg)){
+			switch (adders = get_word_for_argument(line->args[0], &arg)){
 			case IMD:
 				if (line->cmd != PRN){
 					error(sprintf(error_message, INELIGIBLE_ARGUMENTS_TYPE));
@@ -152,7 +160,7 @@ static bool handleLine2(input_line* line) {
 		if (line->args != NULL && line->args[1] == NULL){
 			addressing addres;
 			word arg;
-			switch (addres = getArgWord(line->args[0], &arg)){
+			switch (addres = get_word_for_argument(line->args[0], &arg)){
 				case DIR:
 				case REG:
 					add_cmd(ABS, addres, IMD, line->cmd, NONE, NONE);
@@ -170,40 +178,39 @@ static bool handleLine2(input_line* line) {
 					break;
 			}
 		} else if(line->args != NULL && line->args[1] != NULL && line->args[2] != NULL){
-			addressing addresArgZero, addresArgOne, addresArgTwo ;       /* TODO change addresArg...*/
-			word argZero, argOne, argTwo ;
-			addresArgZero = getArgWord(line->args[0], &argZero);
-			addresArgZero = JWP;
-			addresArgOne = getArgWord(line->args[1], &argOne);
-			addresArgTwo = getArgWord(line->args[2], &argTwo);
+			word argument0, argument1, argument2;
+			addressing address_argument0, address_argument1, address_argument2;
+			address_argument0 = get_word_for_argument(line->args[0], &argument0);
+			address_argument1 = get_word_for_argument(line->args[1], &argument1);
+			address_argument2 = get_word_for_argument(line->args[2], &argument2);
 
-			add_cmd(ABS, addresArgZero, IMD, line->cmd, addresArgOne, addresArgTwo);
-			if ( argZero.num.value == 0 ){
+			add_cmd(ABS, address_argument0, IMD, line->cmd, address_argument1, address_argument2);
+			if ( argument0.num.value == 0 ){
 				if (!addExt(line->args[0], get_cmd_length() + 1)) {
 					return false;
 				}
 			}
-			add_argument(argZero);
-			if (addresArgOne == REG && (addresArgTwo == REG )){
-				word multiReg;
-				multiReg.reg.destOperand = argTwo.reg.destOperand;
-				multiReg.reg.srcOperand = argOne.reg.srcOperand;
-				multiReg.reg.decode = ABS;
-				add_argument(multiReg);
+			add_argument(argument0);
+			if (address_argument1 == REG && (address_argument2 == REG )){
+				word multi_registers;
+				multi_registers.reg.destOperand = argument2.reg.destOperand;
+				multi_registers.reg.srcOperand = argument1.reg.srcOperand;
+				multi_registers.reg.decode = ABS;
+				add_argument(multi_registers);
 			} else {
-				if ( argOne.num.value == 0 ){
+				if ( argument1.num.value == 0 ){
 					if (!addExt(line->args[1], get_cmd_length() + 1 )){
 						return false;
 					}
 				}
-				add_argument(argOne);
+				add_argument(argument1);
 
-				if ( argTwo.num.value == 0 ){
+				if ( argument2.num.value == 0 ){
 					if (!addExt(line->args[2], get_cmd_length() + 1 )){
 						return false;
 					}
 				}
-				add_argument(argTwo);
+				add_argument(argument2);
 			}
 		} else {
 			error(sprintf(error_message, INELIGIBLE_ARGUMENT_COUNT));
@@ -229,7 +236,7 @@ static bool handleLine2(input_line* line) {
 					return false;
 				}
 			} else {
-				error(sprintf(error_message, ENT_TO_UNDEF, line->args[0]));
+				error(sprintf(error_message, UNDEFINED_ENTRY, line->args[0]));
 				return false;
 			}
 		}
@@ -241,17 +248,15 @@ static bool handleLine2(input_line* line) {
 	default:
 		error(sprintf(error_message, UNKNOWN_ERROR));
 		return false;
-		break;
 	}
-
     return true;
 }
 
-static addressing getArgWord(const char *str, word *wrd){
+static addressing get_word_for_argument(const char *str, word *wrd){
 	int num;
 	label *lbl;
 
-	if (str[0] == IMMEDIATE_FLAG) {                    					/*TODO change IMMEDIATE_FLAG*/
+	if (str[0] == IMMEDIATE_FLAG){
 		if (!string_to_int(str + 1, &num)) {
 			error(sprintf(error_message, SYNTAX_ERROR UNKNOWN_ARGUMENT_TYPE));
 			return -1;
@@ -270,7 +275,7 @@ static addressing getArgWord(const char *str, word *wrd){
 			return -1;
 		}
 		wrd->num.value = lbl->address;
-		wrd->num.decode = lbl->isExt ? EXT : RLC;
+		wrd->num.decode = lbl->is_extern ? EXT : RLC;
 		return DIR;
 	}
 	error(sprintf(error_message, SYNTAX_ERROR INVALID_ARGUMENT, str));

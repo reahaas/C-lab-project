@@ -2,7 +2,7 @@
 #define SYMBOLSTRUCTS_H
 #include "symbolTable.h"
 
-/* Structures */
+
 typedef struct labelNode {
 	label *this;
 	struct labelNode *next;
@@ -14,7 +14,7 @@ typedef struct {
 
 typedef struct externNode {
 	struct {
-		char *labelName;
+		char *label_name;
 		int address;
 	}this;
 	struct externNode *next;
@@ -22,7 +22,7 @@ typedef struct externNode {
 
 typedef struct entryNode {
 	struct {
-		char *labelName;
+		char *label_name;
 		int address;
 	}this;
 	struct entryNode *next;

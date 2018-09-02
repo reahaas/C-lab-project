@@ -1,60 +1,49 @@
-/*
- * symbolTable.c
- */
-
 #include "assembler.h"
 #include "symbolTable.h"
 #include "symbolStructs.h"
-/* #include "constants.h" */
+
 #include "converter.h"
 
-static label *createLabel(char *labelName, int address, bool isExtertan,
-		bool isOperation);
-static labelNode *createLabelNode(label *thisLabel, labelNode *nextNode);
+static label *create_label(char *label_name, int address, bool is_extern,
+						   bool isOperation);
+static labelNode *create_label_node(label *thisLabel, labelNode *nextNode);
 
-/* The list */
 labelList symbol_list = { NULL };
 
-/* Extern and Entry addresses list */
 static externList ext_list = { NULL };
 static entryList ent_list = { NULL };
 
 /** Adds a new label to the symbol table.
- *
  * @return status of errors.
- * @populate the errMsg with errors if exist
  */
-bool addLabel(char *labelName, int address, bool isExt, bool isOp) {
-	labelNode *newLabel;
+bool add_label(char *label_name, int address, bool is_extern, bool isOp){
+	labelNode *new_label;
 	labelNode *current = symbol_list.head;
 
-	/* Some error checking */
-	if (labelName == NULL){
+	if (label_name == NULL){
 		error(sprintf(error_message, LABEL_NAME_MISSING));
 		return false;
 	}
-	while (current) {/* Makes sure the label doesn't exist already */
-		if (strcmp(current->this->labelName, labelName) == 0) { /* True the label exists */
-			error(sprintf(error_message, MULTIPLE_LABEL_DEFINITIONS, labelName));
+	while (current){
+		if (strcmp(current->this->label_name, label_name) == 0){
+			error(sprintf(error_message, MULTIPLE_LABEL_DEFINITIONS, label_name));
 			return false;
-		} else if (current->next) {/*check the next one */
-			current = current->next;/*assign current to be the next current*/
+		} else if (current->next){
+			current = current->next;
 		} else
 			break;
 	}
 
-	/* Adds the label to the location found as the right one */
-	newLabel = createLabelNode(createLabel(labelName, address, isExt, isOp),
-	NULL);
-	if (newLabel == NULL)
-		return false; /* Return false if out of RAM */
+	new_label = create_label_node(create_label(label_name, address, is_extern, isOp), NULL);
+	if (new_label == NULL)
+		return false;
 
-	if (!symbol_list.head)/*if it is the first symbol put in head of list */
-		symbol_list.head = newLabel;
+	if (!symbol_list.head)
+		symbol_list.head = new_label;
 	else
-		current->next = newLabel; /*if it is not the head of list first, put in the next node */
+		current->next = new_label;
 	return true;
-}/* End addLabel */
+}
 
 /* Register an external flag in a list */
 bool addExt(char *symbol, int address) {
@@ -75,7 +64,7 @@ bool addExt(char *symbol, int address) {
 	} else {
 		ext_list.head = node;
 	}
-	copy_string(&node->this.labelName, symbol);
+	copy_string(&node->this.label_name, symbol);
 	node->this.address = address + MEMORY_START;
 	node->next = NULL;
 	return true;
@@ -100,7 +89,7 @@ bool addEnt(label *lbl) {
 	} else {
 		ent_list.head = node;
 	}
-	node->this.labelName = lbl->labelName;
+	node->this.label_name = lbl->label_name;
 	node->this.address = lbl->address;
 	node->next = NULL;
 	return true;
@@ -109,27 +98,27 @@ bool addEnt(label *lbl) {
 /* Pops an extern reference and removes it from the list */
 char *popExt(int *address) {
 	externNode *node = ext_list.head;
-	char *labelName;
+	char *label_name;
 	if (!node)
 		return NULL;
 	ext_list.head = node->next;
 	*address = node->this.address;
-	labelName = node->this.labelName;
+	label_name = node->this.label_name;
 	free(node);
-	return labelName;
+	return label_name;
 } /* End popExt */
 
 /* Pops an extern reference and removes it from the list */
 char *popEnt(int *address) {
 	entryNode *node = ent_list.head;
-	char *labelName;
+	char *label_name;
 	if (!node)
 		return NULL;
 	ent_list.head = node->next;
 	*address = node->this.address;
-	labelName = node->this.labelName;
+	label_name = node->this.label_name;
 	free(node);
-	return labelName;
+	return label_name;
 } /* End popEnt */
 
 /* Fix all relocatable */
@@ -137,7 +126,7 @@ void relocate(int spacing) {
 	labelNode *node = symbol_list.head;
 	if (node) {
 		do {
-			if ((!node->this->isOp) && (!node->this->isExt)){
+			if ((!node->this->is_operator) && (!node->this->is_extern)){
 				node->this->address += spacing;
 			}
 		} while ((node = node->next));
@@ -154,7 +143,7 @@ bool findLabel(const char *name) {
 label *getLabel(const char *name) {
 	labelNode *node = symbol_list.head;
 	do {
-		if (strcmp(node->this->labelName, name) == 0) /*runs throw the list and finding label*/
+		if (strcmp(node->this->label_name, name) == 0) /*runs throw the list and finding label*/
 			return node->this;
 	} while ((node = node->next) != NULL);
 	return NULL;
@@ -166,7 +155,7 @@ void freeSymbolTable(void) {
 	if (node != NULL) {
 		do {
 			symbol_list.head = node->next;
-			free(node->this->labelName);
+			free(node->this->label_name);
 			free(node->this);
 			free(node);
 		} while ((node = node->next) != NULL);
@@ -176,12 +165,12 @@ void freeSymbolTable(void) {
 
 void printSymbolTable(void) {/* Debug only. */
 	labelNode *node = symbol_list.head;
-	printf("%s\t\t%s\t\t%s\t%s\n", "Label", "Address", "isExtern", "isOp");
+	printf("%s\t\t%s\t\t%s\t%s\n", "Label", "Address", "is_extern", "is_operator");
 	if (node) {
 		do {
-			printf("%s\t\t%s\t\t%d\t\t%d\n", node->this->labelName,
-				   change_base_2_weird(node->this->address), node->this->isExt,
-					node->this->isOp);
+			printf("%s\t\t%s\t\t%d\t\t%d\n", node->this->label_name,
+				   change_base_2_weird(node->this->address), node->this->is_extern,
+					node->this->is_operator);
 		} while ((node = node->next) != NULL);
 	}
 
@@ -193,33 +182,33 @@ void printSymbolTable(void) {/* Debug only. */
  *
  * @return NULL for errors.
  */
-static label *createLabel(char *labelName, int address, bool isExt, bool isOp) {
+static label *create_label(char *label_name, int address, bool is_extern, bool isOp) {
 	label *newLabel = malloc(sizeof(label));
 	if (newLabel == NULL) {
 		error(sprintf(error_message, OUT_OF_MEMORY));
 		return NULL;
 	}
 
-	if (!copy_string(&newLabel->labelName, labelName)) {
+	if (!copy_string(&newLabel->label_name, label_name)) {
 		free(newLabel);
 		error(sprintf(error_message, OUT_OF_MEMORY));
 		return NULL;
 	}
 	newLabel->address = address;
-	newLabel->isExt = isExt;
-	newLabel->isOp = isOp;
+	newLabel->is_extern = is_extern;
+	newLabel->is_operator = isOp;
 	return newLabel;
-}/* End createLabel */
+}/* End create_label */
 
 /* Creates a label node with a dynamic allocated storage
  *
  * @return NULL for errors.
  */
-static labelNode *createLabelNode(label *this, labelNode *next) {
+static labelNode *create_label_node(label *this, labelNode *next) {
 	labelNode *newLabelNode = malloc(sizeof(labelNode));
 	if (newLabelNode == NULL || this == NULL) {
 		if (this)
-			free(this->labelName);
+			free(this->label_name);
 		free(this);
 		free(newLabelNode);
 		error(sprintf(error_message, OUT_OF_MEMORY));
@@ -229,4 +218,4 @@ static labelNode *createLabelNode(label *this, labelNode *next) {
 	newLabelNode->this = this;
 	newLabelNode->next = next;
 	return newLabelNode;
-}/* End createLabelNode */
+}/* End create_label_node */

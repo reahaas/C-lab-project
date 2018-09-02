@@ -24,12 +24,12 @@ static dataNode* create_data_node(int data) {
  * @param data, the data (char or int)
  * @returns true while successful adding occurs, false otherwise
  * */
-int addData(unsigned int data) {
+int add_data(unsigned int data){
 	dataNode *curr, *newNode;
 	data_list.length++;
 	if ((newNode = create_data_node(data % (int) pow(2, WORD_SIZE)))
 			&& cmd_list.length + data_list.length < MAX_MEMORY_SIZE) {
-		if (data_list.head == NULL) { /*list is empty*/
+		if (data_list.head == NULL){
 			data_list.head = newNode;
 		} else {
 			for (curr = data_list.head; curr->next != NULL; curr = curr->next)
