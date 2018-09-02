@@ -362,6 +362,7 @@ static int get_operator_valid(const char **ops, const char *str, const int ops_a
 	return -1;
 }
 
+
 bool valid_number(char *str){
 	int num;
 	if (str[0] == IMMEDIATE_FLAG){
@@ -376,6 +377,11 @@ bool valid_number(char *str){
 	}
 }
 
+/**
+ * Function check if the label is valid for the second addressing
+ * @param label_string, label to check
+ * @return true for valid, false for not valid
+ * */
 bool valid_label_for_second_addressing(char *label_string){
 	int i;
 	if (get_operator_valid(ops, label_string, (sizeof(ops) / sizeof(ops[0]))) != -1){
