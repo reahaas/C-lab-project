@@ -2,6 +2,10 @@
 #include "converter.h"
 #include <math.h>
 
+/**
+ * Function change the base of the value to the weird 2
+ * @param value, the long unsigned int from a decimal base
+ * */
 char * change_base_2_weird(long unsigned int value){
 	int i;
 	const char base2[3] = "./";
@@ -25,6 +29,10 @@ char * change_base_2_weird(long unsigned int value){
 	return result;
 }
 
+/**
+ * Function print the value out of a give int
+ * @param value, the given int
+ * */
 char *print_value_in_string(long unsigned int value){
 	char *result = (char *) malloc(WORD_SIZE);
 	if (!result){

@@ -5,10 +5,10 @@
 #include <stdlib.h>
 #include "constants.h"
 
-#define	EXIT_FAILURE 1
 #define	EXIT_SUCCESS 0
-#define MAXIMUM_LENGTH 200
+#define	EXIT_FAILURE 1
 
+#define MAXIMUM_LENGTH 200
 #define OUT_OF_MEMORY "Limited memory. "
 #define OUT_OF_STORAGE "Limited storage space. "
 #define ERROR_STRING "File:%s Line:%d: %s\n"

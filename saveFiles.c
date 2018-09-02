@@ -10,6 +10,9 @@ static bool save_data(FILE *file, int *i);
 static bool save_external(FILE *file, int *i);
 static bool save_entries(FILE *file, int *i);
 
+/**
+ * function saves files after a successful cycle
+ * */
 void saveFiles(void){
 	char *name;
 	FILE *out;
@@ -41,6 +44,7 @@ void saveFiles(void){
 
 	free(name);
 }
+
 
 static bool save_object(FILE *file, int *i){
 	cmdNode* cmd_node = NULL;

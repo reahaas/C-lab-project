@@ -19,7 +19,6 @@ add_executable(C_lab_project
         errorStates.h
         firstCycle.c
         main.c
-        README.md
         saveFiles.c
         saveFiles.h
         secondCycle.c

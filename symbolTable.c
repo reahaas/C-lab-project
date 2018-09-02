@@ -5,7 +5,7 @@
 #include "converter.h"
 
 static label *create_label(char *label_name, int address, bool is_extern,
-						   bool isOperation);
+						   bool is_operator);
 static labelNode *create_label_node(label *thisLabel, labelNode *nextNode);
 
 labelList symbol_list = { NULL };
@@ -168,8 +168,12 @@ label *getLabel(const char *name) {
 	return NULL;
 }
 
-
-static label *create_label(char *label_name, int address, bool is_extern, bool isOp) {
+/**
+ * function create node of label and insert all the parameters into the node fields
+ * @param label_name, name of the label
+ * @param address, 
+ * */
+static label *create_label(char *label_name, int address, bool is_extern, bool is_operator) {
 	label *newLabel = malloc(sizeof(label));
 	if (newLabel == NULL) {
 		error(sprintf(error_message, OUT_OF_MEMORY));
@@ -183,13 +187,13 @@ static label *create_label(char *label_name, int address, bool is_extern, bool i
 	}
 	newLabel->address = address;
 	newLabel->is_extern = is_extern;
-	newLabel->is_operator = isOp;
+	newLabel->is_operator = is_operator;
 	return newLabel;
 }
 
-/* Creates a label node with a dynamic allocated storage
- *
- * @return NULL for errors.
+/**
+ * Function creates label node with dynamic allocated storage
+ * @return NULL while error occur
  */
 static labelNode *create_label_node(label *this, labelNode *next) {
 	labelNode *newLabelNode = malloc(sizeof(labelNode));
@@ -201,7 +205,6 @@ static labelNode *create_label_node(label *this, labelNode *next) {
 		error(sprintf(error_message, OUT_OF_MEMORY));
 		return NULL;
 	}
-
 	newLabelNode->this = this;
 	newLabelNode->next = next;
 	return newLabelNode;

@@ -36,7 +36,11 @@ int main(int argc, char* argv[]){
 		return EXIT_SUCCESS;
 	}
 }
-
+/**
+ * Function dictate the flow of the cycles by navigate the actions in order
+ * @param source_file, the input file
+ * @returns true while assembler success, otherwise false
+ * */
 FLAG assembler(FILE *source_file){
 	flag = ASSEMBLER_SUCCESS;
 	printf("\nBegin of the first cycle\n\n");

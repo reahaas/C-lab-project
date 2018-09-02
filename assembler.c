@@ -15,6 +15,12 @@ const char *ops[] = { "mov", "cmp", "add", "sub", "not", "clr", "lea",
                       "inc", "dec", "jmp", "bne", "red", "prn", "jsr", "rts", "stop",
                       ".data", ".string", ".entry", ".extern" };
 
+/**
+ * function fix the second addressing
+ * @param src, pointer to the right place in the source
+ * @param line, pointer to the line to change
+ * @returns true while fix successfully
+ * */
 bool check_and_fix_second_addr(char *src, input_line *line){
   	 char *symbol, *first_parameter, *second_parameter, *check = NULL, *has_spaces = NULL;
 	 check = strchr(src, '(');
@@ -214,6 +220,9 @@ bool rec_label(char *tmp_str, input_line *line){
 
 }
 
+/**
+ * Simple free line function
+ * */
 void free_line(input_line *line){
 	int i;
 	if (line -> is_end_of_file)
@@ -228,6 +237,11 @@ void free_line(input_line *line){
 	}
 }
 
+/**
+ * function check if label is valid
+ * @param label_str, the label to check
+ * @return true while vaild, otherwise flase
+ * */
 bool valid_label(const char *label_str){
 	int i;
 	if (get_operator_valid(ops, label_str, (sizeof(ops) / sizeof(ops[0]))) != -1){
@@ -251,6 +265,11 @@ bool valid_label(const char *label_str){
 	}
 }
 
+/**
+ * function check if register is valid
+ * @param string_register, the register to check
+ * @return true while vaild, otherwise flase
+ * */
 bool valid_register(const char *string_register){
 	return ((string_register[0] == REGISTER_FLAG && '0' <= string_register[1] && string_register[1] <= '7'	&& string_register[2] == '\0') ? true : false);
 }

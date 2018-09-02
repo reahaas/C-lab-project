@@ -40,7 +40,8 @@ FLAG firstCycle(FILE *source_file){
 }
 
 /**
- * @param line
+ * Function scanning the line, checks legal addressing, if there are operators, labels and externs.
+ * @param line, the line from source
  * @returns false while function can't recognise the line, otherwise true
  * */
 static bool analyze_line(input_line *line){
