@@ -10,10 +10,6 @@
 #include "errorStates.h"
 
 extern FLAG flag;
-extern int ic;
-extern int dc;
-
-
 FLAG assembler(FILE *source_file);
 input_line *get_line(FILE *);
 void free_line(input_line *line);

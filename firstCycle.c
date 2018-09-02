@@ -162,8 +162,8 @@ static bool handleLine(input_line* line) {
                     /* Did'nt success to add label error */
                 }
             }
-            if (*c++ == STR_DELIM) {
-                while (*c != STR_DELIM) {
+            if (*c++ == QUOTATION_MARK) {
+                while (*c != QUOTATION_MARK) {
                     if (!(addData(*c++))) {
                         error(sprintf(error_message, OUT_OF_MEMORY));
                         return false;

@@ -12,10 +12,10 @@ typedef struct cmdNode {
 typedef struct {
 	cmdNode* head;
 	int length;
-} cmdList;
+} CMD_LIST;
 
 /*############EXTERN VARIABLES#############*/
-extern cmdList cmd_list;
+extern CMD_LIST cmd_list;
 /*############FUNCTIONS####################*/
 /* 
  Adds command to cmd_list

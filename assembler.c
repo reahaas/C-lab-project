@@ -17,7 +17,7 @@ const char *ops[] = { "mov", "cmp", "add", "sub", "not", "clr", "lea",
                       "inc", "dec", "jmp", "bne", "red", "prn", "jsr", "rts", "stop",
                       ".data", ".string", ".entry", ".extern" };
 
-bool check_and_fix_second_addr(char *src, input_line *line) {       /* TODO check if static needed*/
+bool check_and_fix_second_addr(char *src, input_line *line){
   	 char *symbol, *first_parameter, *second_parameter, *check = NULL, *has_spaces = NULL;
 	 check = strchr(src, '(');
 	 has_spaces = strchr(src, SPACE);
@@ -29,7 +29,6 @@ bool check_and_fix_second_addr(char *src, input_line *line) {       /* TODO chec
 					(!valid_register(first_parameter) && (!valid_number(first_parameter)))){
 		 	return false;
 		 }
-
 		 else if ((!valid_label_for_second_addressing(second_parameter = strtok(NULL, CLOSE_PARENTHESES))) &&
 				  (!valid_register(second_parameter) && (!valid_number(second_parameter)))){
 		 	return false;
@@ -53,8 +52,8 @@ bool check_and_fix_second_addr(char *src, input_line *line) {       /* TODO chec
 		 error(sprintf(error_message, SYNTAX_ERROR UNKNOWN_ARGUMENT_TYPE));
 		 return false;
  }
-	else {
-			return false;
+ else {
+ 	return false;
 	}
 }
 
@@ -141,7 +140,7 @@ input_line * get_line(FILE *input){
 		}
 
 
-		for (; (status = get_next_argument(NULL, temp_string)); i++) {
+		for (; (status = get_next_argument(NULL, temp_string)); i++){
 			if (status == -1) {
 				free_line(line);
 				return NULL;
@@ -159,7 +158,7 @@ input_line * get_line(FILE *input){
 	return line;
 }
 
-/*TODO change api*/
+
 /**
  * Create canonical form of the command_string
  * @param command_string, the origin string
@@ -167,8 +166,8 @@ input_line * get_line(FILE *input){
  */
 void trimmer(char * command_string, input_line * line){
 	char *p1, *p2;
-
 	p1 = p2 = command_string;
+
 	while (isspace(*p2))
 		p2++;
 	if (*p2 == '\0') {
@@ -194,7 +193,7 @@ void trimmer(char * command_string, input_line * line){
  */
 bool rec_label(char *tmp_str, input_line *line){
     int length = (int)(strlen(tmp_str)) - 1;
-	if (tmp_str[(length)] == LABEL_DELIM){                   /*TODO change delim */
+	if (tmp_str[(length)] == COLON){
 		tmp_str[length] = '\0';
 		if (valid_label(tmp_str)){
 			if (copy_string(&(line->label), tmp_str)) {
@@ -281,7 +280,7 @@ bool string_to_int(const char *str, int *dest){
 }
 
 /**
- * Gets the next argument from the current line.
+ * Gets the next argument from the line.
  * @param src, the current line as a string.
  * @param dest, string for the next argument.
  * @return true while succeeded.
@@ -292,17 +291,17 @@ static bool get_next_argument(char *src, char *dest){
     if (src != NULL){
         cmd_str = src;
     }
-    while (isspace(*cmd_str))                               /* TODO change isspace and the ctype file */
+    while (isspace(*cmd_str))
         cmd_str++;
     if (*cmd_str == '\0')
         return false;
-    for (i = 0; *cmd_str != ARG_SEPERATOR && *cmd_str != '\0'; cmd_str++){
+    for (i = 0; *cmd_str != COMMA && *cmd_str != '\0'; cmd_str++){
         if (in_str) {
-            if (*cmd_str == STR_DELIM)                    /* TODO change delim*/
+            if (*cmd_str == QUOTATION_MARK)
                 in_str = 0;
         } else if (isspace(*cmd_str))
             break;
-        else if (*cmd_str == STR_DELIM){
+        else if (*cmd_str == QUOTATION_MARK){
             in_str = 1;
         }
         dest[i] = *cmd_str;
@@ -314,12 +313,12 @@ static bool get_next_argument(char *src, char *dest){
     }
     while (isspace(*cmd_str))
         cmd_str++;
-    if (*cmd_str != '\0' && *cmd_str != ARG_SEPERATOR){
+    if (*cmd_str != '\0' && *cmd_str != COMMA){
         error(sprintf(error_message, SYNTAX_ERROR UNKNOWN_ARGUMENT_TYPE));
         return -1;
     }
     dest[i] = '\0';
-    if (*cmd_str == ARG_SEPERATOR){
+    if (*cmd_str == COMMA){
         cmd_str++;
         if (*cmd_str == '\0'){
             error(sprintf(error_message, SYNTAX_ERROR EMPTY_ARGUMENT));

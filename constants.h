@@ -65,11 +65,11 @@ typedef enum {
 /* Definition for all signs */
 #define NEWLINE '\n'
 #define COMMENT_SIGN ';'
-#define LABEL_DELIM ':'
-#define STR_DELIM '"'
+#define COLON ':'
+#define QUOTATION_MARK '"'
 #define REG_FLAG 'r'
 #define IMMEDIATE_FLAG '#'
-#define ARG_SEPERATOR ','
+#define COMMA ','
 #define SPACE ' '
 #define OPEN_PARENTHESES "("
 #define CLOSE_PARENTHESES ")"
