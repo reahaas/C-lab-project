@@ -22,7 +22,7 @@ bool validLabel(const char *);
 bool validReg(const char* registerStr);
 bool copyStr(char **dest, const char *src);
 bool strToInt(const char *str, int *dest);
-static bool handleForAddressing2(char *src, input_line *line);
+bool handleForAddressing2(char *src, input_line *line);
 bool validLabelForAdrresing2(char* labelStr);
 bool validNumber(char *str);
 

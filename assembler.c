@@ -24,9 +24,9 @@ const char *ops[] = { "mov", "cmp", "add", "sub", "not", "clr", "lea",
                       "inc", "dec", "jmp", "bne", "red", "prn", "jsr", "rts", "stop", /* Ops until here */
                       ".data", ".string", ".entry", ".extern" }; /* Instructions *//* The order of these command stay identical to the order of the enum constants in constants.h so the index will match the enum value */
 
- static bool handleForAddressing2(char *src, input_line *line) { /* TODO validation if u have space or should be false*/
-	 static char *label1, *param1, *param2, *isContainParanatist = NULL, *hasspaces = NULL;
-	 char *args0, *args1, *args2; /*degug*/
+ bool handleForAddressing2(char *src, input_line *line) {
+	 char *label1, *param1, *param2, *isContainParanatist = NULL, *hasspaces = NULL;
+	 /*char *args0, *args1, *args2; */
 	 isContainParanatist = strchr(src, '(');
 	 hasspaces = strchr(src, SPACE);
 	 if (isContainParanatist != NULL){
@@ -53,9 +53,9 @@ const char *ops[] = { "mov", "cmp", "add", "sub", "not", "clr", "lea",
 				 return false;
 			 }
 
-			 args0 = line->args[0];
-			 args1 = line->args[1];
-			 args2 = line->args[2];
+			 /*args0 = line->args[0]; */
+			 /*args1 = line->args[1]; */
+			 /*args2 = line->args[2]; */
 			 return true;
 		 }
 	 }
@@ -166,8 +166,7 @@ input_line * getLine(FILE *input) {
 				freeLine(line);
 				return NULL;
 			}
-		} /* End of get all the other arguments */
-		//}
+		}
     }
 
     if ((length = i) > 0) /*length is number of arguments in*/
@@ -215,12 +214,14 @@ void trimmer(char * cmdStr, input_line * line){
  */
 bool RecogniseLabelSection(char  * tmpStr, input_line *line) {
     int length = (int)(strlen(tmpStr)) - 1;
-	if (tmpStr[(length)] == LABEL_DELIM){ // if in last place there is ':'
+	if (tmpStr[(length)] == LABEL_DELIM){ /*if in last place there is ':' */
 		tmpStr[length] = '\0';
 		if (validLabel(tmpStr)){
-			if (copyStr(&(line->label), tmpStr)) /*copying label in to line->label*/
-                strIndex += strlen(line->label) + 2; /*putting the string index after the label name example: MAIN: [here]*/
-
+			if (copyStr(&(line->label), tmpStr)) { /*copying label in to line->label*/
+                strIndex +=
+                        strlen(line->label) + 2; /*putting the string index after the label name example: MAIN: [here]*/
+                        return true;
+            }
 			else {
 				freeLine(line); /*doing free here don't need in label aswell*/
 				return false; /* Error msg is placed in copyStr */
@@ -329,12 +330,12 @@ static bool getNextArg(char *src, char *dest){
                 inStr = 0;
         } else if (isspace(*cmdStr))
             break;
-        else if (*cmdStr == STR_DELIM) { // if starts a string
+        else if (*cmdStr == STR_DELIM) { /* if starts a string */
             inStr = 1;
         }
-        dest[i] = *cmdStr; // will t
+        dest[i] = *cmdStr; /* will t */
         i++;
-    } // end of for
+    } /* end of for */
     if (i == 0) {
         error(sprintf(errMsg, SYNTAX_ERROR EMPTY_ARG));
         return -1;
@@ -383,6 +384,7 @@ bool validNumber(char *str){
 			return -1;
 		}
 	}
+	return true;
 }
 
 bool validLabelForAdrresing2(char* labelStr){ /*WITHOUT VALID REG*/

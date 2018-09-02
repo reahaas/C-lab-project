@@ -44,7 +44,7 @@ FLAG secondRun(FILE *src) {
 
 /* Analyses an line of code and operates accordingly */
 static bool handleLine2(input_line* line) {
-	char* argslabel,*args2,*args3;
+	/* char* argslabel,*args2,*args3; */
 
 
 	switch (line->cmd) {
@@ -129,9 +129,9 @@ static bool handleLine2(input_line* line) {
 	case DEC:
 	case RED:
 	case PRN:
-		argslabel = line-> args[0];
-			args2 = line -> args[1];
-			args3 = line -> args[2];
+		/*argslabel = line-> args[0]; */
+		/*	args2 = line -> args[1]; */
+		/*	args3 = line -> args[2]; */
 			if (line->args != NULL && line->args[1] == NULL) { /* Only one arg*/
 			addressing adders; /*can be 0,1,2,3*/
 			word arg;

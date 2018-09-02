@@ -49,7 +49,6 @@ FLAG assembler(FILE *src) {
 	firstRun(src); /* if an error occurs during the first run, flag turn to ASM_FAILURE */
 	if (flag == ASM_SUCCESS) {
 		printf("\nfirst run succede, start secont run\n\n");
-
 		secondRun(src); /* if an error occur during the second run, flag turn to ASM_FAILURE */
 	} else {
 		printf("\nfirst run failure\n\n");
@@ -62,4 +61,5 @@ FLAG assembler(FILE *src) {
 	} else {
 		printf("\nsecond run failure\n\n");
 	}
+	return flag;
 }
