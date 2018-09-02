@@ -1,5 +1,5 @@
-myProject: assembler.o cmdTable.o converter.o dataTable.o errorHandler.o firstRun.o main.o saveFiles.o secondRun.o symbolTable.o
-	gcc -g -ansi -Wall assembler.o cmdTable.o converter.o dataTable.o errorHandler.o firstRun.o main.o saveFiles.o secondRun.o symbolTable.o -o myProject -lm
+runFile: assembler.o cmdTable.o converter.o dataTable.o errorHandler.o firstRun.o main.o saveFiles.o secondRun.o symbolTable.o
+	gcc -g -ansi -Wall assembler.o cmdTable.o converter.o dataTable.o errorHandler.o firstRun.o main.o saveFiles.o secondRun.o symbolTable.o -o runFile -lm
 
 assembler.o: assembler.c
 	gcc -c -ansi -Wall assembler.c -o assembler.o
